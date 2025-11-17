@@ -1,2 +1,2 @@
 # EarthMessengerGame
-Text-based adventure game 
+You wake up alone on a one person ship- all humans have gone extinct and you were cryogenically frozen to preserve the human race... The ship is destined to a far away planet that scientists discovered contains all the elements needed to sustain human life. When you arrive at this planet you are greeted by a human-like species who has been studying Earth Humans for many years through its abandoned structures and left-over media. They are convinced that the species was wiped out many years ago due to greed and corruption... you must convince them that you are -in fact- the last human from Earth and that your intentions are pure so that they may integrate you into their planet. 
