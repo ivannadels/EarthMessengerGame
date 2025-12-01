@@ -13,7 +13,7 @@ public class WaterBottle extends Item {
         } else {
             System.out.println("You drink the water.");
             empty = true;
-            player.setHasDrankWater(true);
+            player.setHasDrunkWater(true);
         }
     }
 }
