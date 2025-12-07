@@ -2,6 +2,7 @@
 
             protected String name;
             protected String description;
+            protected boolean isUsed;
 
             public Item(String name, String description) {
                 this.name = name;
@@ -14,6 +15,14 @@
 
             public String getDescription() {
                 return description;
+            }
+
+            public boolean isUsed() {
+                return isUsed;
+            }
+
+            public void setUsed(boolean isUsed) {
+                this.isUsed = isUsed;
             }
 
             //each item is being used in its specific way، it it the

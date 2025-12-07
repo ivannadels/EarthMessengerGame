@@ -16,3 +16,41 @@
  *   spaceship.addConnection("exit", planetSurface);
  *   String desc = spaceship.getDescription();
  */
+import java.util.*;
+public class Location {
+
+    private String name;
+    private String description;
+    private List<Item> items;
+    private Map<String, Location> connectedRooms;
+    private boolean isOutside;
+    private boolean visited;
+
+    public Location(boolean isOutside, String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.isOutside = isOutside;
+        this.connectedRooms = new HashMap<>();
+        this.items = new ArrayList<>();
+        this.visited = false;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    public void removeItem(Item item) {
+        items.remove(item);
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getDescription() {
+        return description;
+    }
+
+}
