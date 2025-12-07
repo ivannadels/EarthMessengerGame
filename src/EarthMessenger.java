@@ -78,13 +78,32 @@ public class EarthMessenger {
     }
 
     public boolean load(Player player) {
-
-
+        // Spaceship Location set up
         Location spaceship = new Location(false, "Spaceship");
-        String spaceshipDesc = "Spaceship";
+        spaceship.setLongDescription(
+                "The spaceship is small and cramped. Metal walls surround you. " +
+                "Your cryopod sits open against one wall. Control panels flicker. " +
+                "Three storage compartments line the opposite wall, their doors slightly\n" +
+                "ajar. In the middle of the main control panel sits a small device...\n" +
+                "Upon closer inspection, you notice it's an iPhone.\n\n" +
+                "There's a sticky note on the phone's screen. It reads:\n" +
+                "\"PLAY MESSAGE\"");
+        spaceship.setShortDescription("\"You are inside your cramped one-person vessel.\"");
         Item pizza = new Pizza();
         Item iPhone = new IPhone();
         Item watterBottle = new WaterBottle();
+        // Spaceship specific commands
+        spaceship.addSpecialCommand("unlock door", "open door");
+        spaceship.addSpecialCommand("open door", "open door");
+        spaceship.addSpecialCommand("open compartments", "open compartments");
+        spaceship.addSpecialCommand("check compartments", "open compartments");
+        spaceship.addSpecialCommand("microwave pizza", "use microwave");
+        spaceship.addSpecialCommand("use microwave", "use microwave");
+        spaceship.addSpecialCommand("eat pizza", "eat pizza");
+        spaceship.addSpecialCommand("drink water", "drink water");
+        spaceship.addSpecialCommand("check systems", "check systems");
+        spaceship.addSpecialCommand("examine systems", "examine systems");
+
         spaceship.addItem(pizza);
         spaceship.addItem(iPhone);
         spaceship.addItem(watterBottle);
@@ -101,15 +120,14 @@ public class EarthMessenger {
         System.out.println();
         System.out.println("A sharp jolt. Then silence.");
         System.out.println();
-        System.out.println("Your eyes flutter open. Frost clings to your eyelashes.");
-        System.out.println("The cryogenic chamber hisses and releases you from its");
-        System.out.println("frozen grip. Your muscles ache. Your head throbs.");
+        System.out.println("The cryogenic chamber hisses and the glass door swings open.");
+        System.out.println("Your muscles ache. Your head throbs.");
         System.out.println();
         pressEnterToContinue(scanner);
 
         System.out.println("Where... where are you?");
         System.out.println();
-        System.out.println("Through the viewport, you see an almost familiar landscape—");
+        System.out.println("Through the viewport, you see an almost familiar landscape.");
         System.out.println("You are on the top of a hill, looking down into a green");
         System.out.println("valley. You can see within the green there are shades of");
         System.out.println("yellow, pink and purple dancing in the wind... flowers.");

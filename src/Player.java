@@ -41,12 +41,19 @@ public class Player {
     //players backpack
     public void addItem(CommandParser.Noun itemToAdd) {
         Item itemInLocation = currentLocation.getItems().stream()
-                        .filter(item -> itemToAdd.toString().equalsIgnoreCase(itemToAdd.toString()))
-                        .findFirst().orElse(null);
-        inventory.add(itemInLocation);
-        currentLocation.removeItem(itemInLocation);
-        System.out.println(inventory.toString());
+                .filter(item -> itemToAdd.matchesItem(item))
+                .findFirst()
+                .orElse(null);
+
+        if (itemInLocation != null) {
+            inventory.add(itemInLocation);
+            currentLocation.removeItem(itemInLocation);
+            System.out.println("Added: " + itemInLocation.getName());
+        } else {
+            System.out.println("No such item found in location.");
+        }
     }
+
 
     public void removeItem(CommandParser.Noun itemToRemove) {
         inventory.remove(itemToRemove);
@@ -57,10 +64,9 @@ public class Player {
         return inventory;
     }
 
-
     //setter and getters for item missions
 
-//if player listend: true
+    //if player listend: true
     public boolean hasListenedToMessage() {
         return hasListenedToMessage;
     }
@@ -70,8 +76,6 @@ public class Player {
         hasListenedToMessage = value;
     }
 
-
-//if player ate food: true
     public int getHungerLevel() {
         return hungerLevel;
     }
@@ -80,7 +84,6 @@ public class Player {
         hungerLevel += value;
     }
 
-    //if player drank water: true
     public int getThirstLevel() {
         return thirstLevel;
     }
@@ -88,6 +91,15 @@ public class Player {
     public void setThirstLevel(int value) {
         thirstLevel += value;
     }
+
+    public Item getItemFromInventory(String itemName) {
+        return inventory.stream()
+                .filter(item -> item.getName().equalsIgnoreCase(itemName))
+                .findFirst()
+                .orElse(null);
+    }
+
+
     public void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;
     }
