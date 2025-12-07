@@ -93,6 +93,7 @@ public class EarthMessenger {
         Item iPhone = new IPhone();
         Item watterBottle = new WaterBottle();
         // Spaceship specific commands
+        // Todo: Test + handle all the spaceship specific commands
         spaceship.addSpecialCommand("unlock door", "open door");
         spaceship.addSpecialCommand("open door", "open door");
         spaceship.addSpecialCommand("open compartments", "open compartments");
@@ -110,6 +111,8 @@ public class EarthMessenger {
 
         Locations.put(spaceship.getName(),spaceship);
         player.setCurrentLocation(Locations.get(spaceship.getName()));
+
+        // Todo: add connected rooms to each exit to handle movement in and out of the spaceship
 
         return true;
     }

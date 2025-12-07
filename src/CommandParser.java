@@ -9,6 +9,7 @@ public class CommandParser {
      *
      * @param player The player object that will be modified by commands
      */
+    // Todo: Handle movement commands
     public CommandParser(Player player) {
         this.player = player;
         validCommands = new HashMap<>();
