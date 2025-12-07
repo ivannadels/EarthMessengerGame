@@ -47,8 +47,16 @@ public class EarthMessenger {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("What is your name? ");
-        String playerName = scanner.next();
+
+        // Welcome message
+        System.out.println("═══════════════════════════════════════════════════════");
+        System.out.println("           EARTH MESSENGER: THE LAST HUMAN             ");
+        System.out.println("═══════════════════════════════════════════════════════");
+        System.out.println();
+        System.out.print("Before we begin, what is your name? ");
+        String playerName = scanner.nextLine().trim();
+        System.out.println();
+
         EarthMessenger earthMessenger = new EarthMessenger(playerName);
         if(earthMessenger.load(earthMessenger.player)){
             earthMessenger.start();
@@ -86,11 +94,76 @@ public class EarthMessenger {
     }
 
     public void displayIntro() {
-        System.out.println("Welcome to the Earth Messenger game!");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("───────────────────────────────────────────────────────");
+        System.out.println();
+        System.out.println("A sharp jolt. Then silence.");
+        System.out.println();
+        System.out.println("Your eyes flutter open. Frost clings to your eyelashes.");
+        System.out.println("The cryogenic chamber hisses and releases you from its");
+        System.out.println("frozen grip. Your muscles ache. Your head throbs.");
+        System.out.println();
+        pressEnterToContinue(scanner);
+
+        System.out.println("Where... where are you?");
+        System.out.println();
+        System.out.println("Through the viewport, you see an almost familiar landscape—");
+        System.out.println("You are on the top of a hill, looking down into a green");
+        System.out.println("valley. You can see within the green there are shades of");
+        System.out.println("yellow, pink and purple dancing in the wind... flowers.");
+        System.out.println();
+        System.out.println("It looks like the fields you remember playing in back home...");
+        System.out.println();
+        pressEnterToContinue(scanner);
+
+        System.out.println("You finally look up. The sky is vast and a light shade of");
+        System.out.println("blue. Enthralled by its beauty, you almost don't notice");
+        System.out.println("that there is more than one moon where the sun is supposed");
+        System.out.println("to be.");
+        System.out.println();
+        System.out.println("Where is the sun?");
+        System.out.println();
+        System.out.println("This isn't Earth.");
+        System.out.println();
+        pressEnterToContinue(scanner);
+
+        System.out.println("You turn around. The spaceship is tiny, barely large enough");
+        System.out.println("for one person. Storage compartments. A control panel with");
+        System.out.println("dead screens. Your cryopod, now open and empty.");
+        System.out.println();
+        System.out.println("You are completely alone.");
+        System.out.println();
+        pressEnterToContinue(scanner);
+
+        System.out.println("Your throat is dry. Your stomach growls. Why were you");
+        System.out.println("frozen? How long have you been asleep? Where is everyone?");
+        System.out.println();
+        System.out.println("The questions pile up, but there are no answers.");
+        System.out.println();
+        pressEnterToContinue(scanner);
+
+        System.out.println("───────────────────────────────────────────────────────");
+        System.out.println();
+        System.out.println("You are in your spaceship. You need to figure out what's");
+        System.out.println("going on.");
+        System.out.println();
+        System.out.println("Type 'help' to see available commands.");
+        System.out.println();
     }
 
     public void displayOutro() {
         System.out.println("Game over!");
+    }
+
+    /**
+     * Prompts the user to press Enter to continue.
+     *
+     * @param scanner The Scanner object to read input
+     */
+    private void pressEnterToContinue(Scanner scanner) {
+        System.out.println("[Press Enter to continue...]");
+        scanner.nextLine();
+        System.out.println();
     }
 
     public boolean isGameLost() {
