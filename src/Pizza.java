@@ -1,9 +1,11 @@
 public class Pizza extends Item {
 
     private boolean eaten = false;
+    private int hungerScore = 5;
 
     public Pizza() {
-        super("Frozen Pizza", "A preserved pizza for space travel.");
+        String description = "A frozen meal, ready to eat";
+        super("pizza", description, "\uD83C\uDF55");
     }
 
     @Override
@@ -13,7 +15,7 @@ public class Pizza extends Item {
         } else {
             System.out.println("You eat the pizza and regain some strength.");
             eaten = true;
-            player.setHasEaten(true);
+            player.setHungerLevel(hungerScore);
         }
     }
 }

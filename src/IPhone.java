@@ -1,7 +1,8 @@
 public class IPhone extends Item {
 
     public IPhone() {
-        super("iPhone 16 Pro", "A device containing a mission message from Earth.");
+        String description = "A sleek smartphone with a recorded message";
+        super("iphone", description, "\uD83D\uDCF1");
     }
 
     @Override

@@ -79,7 +79,9 @@ public class EarthMessenger {
 
     public boolean load(Player player) {
 
-        Location spaceship = new Location(false, "Spaceship", "Description");
+
+        Location spaceship = new Location(false, "Spaceship");
+        String spaceshipDesc = "Spaceship";
         Item pizza = new Pizza();
         Item iPhone = new IPhone();
         Item watterBottle = new WaterBottle();

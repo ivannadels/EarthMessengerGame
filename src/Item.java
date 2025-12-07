@@ -2,11 +2,14 @@
 
             protected String name;
             protected String description;
+            protected String graphic;
             protected boolean isUsed;
 
-            public Item(String name, String description) {
+            public Item(String name, String description,  String graphic) {
                 this.name = name;
                 this.description = description;
+                this.graphic = graphic;
+                this.isUsed = false;
             }
 
             public String getName() {
@@ -15,6 +18,9 @@
 
             public String getDescription() {
                 return description;
+            }
+            public String getGraphic() {
+                return graphic;
             }
 
             public boolean isUsed() {

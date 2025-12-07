@@ -10,16 +10,20 @@ public class Player {
     private String name;
     private List<Item> inventory;
     private boolean hasListenedToMessage;   // True after using the iPhone
-    private boolean hasEaten;               // True after eating the pizza
-    private boolean hasDrunkWater;          // True after drinking water
+    private int hungerLevel;
+    private int maxHungerLevel;
+    private int thirstLevel;
+    private int maxThirstLevel;
     private static Location currentLocation;
 
     public Player(String name) {
         inventory = new ArrayList<>();
         this.name = name;
         hasListenedToMessage = false;
-        hasEaten = false;
-        hasDrunkWater = false;
+        hungerLevel = 0;
+        thirstLevel = 0;
+        maxHungerLevel = 5;
+        maxThirstLevel = 5;
     }
 
     public void useItem(CommandParser.Noun itemToUse) {
@@ -67,23 +71,22 @@ public class Player {
     }
 
 
-//if plyaer ate pizza: true
-    public boolean hasEaten() {
-        return hasEaten;
+//if player ate food: true
+    public int getHungerLevel() {
+        return hungerLevel;
     }
-    //setter for eating pizza
-    public void setHasEaten(boolean value) {
-        hasEaten = value;
+    //setter for eating food
+    public void setHungerLevel(int value) {
+        hungerLevel += value;
     }
-
 
     //if player drank water: true
-    public boolean hasDrunkWater() {
-        return hasDrunkWater;
+    public int getThirstLevel() {
+        return thirstLevel;
     }
     //setter for drinking water
-    public void setHasDrunkWater(boolean value) {
-        hasDrunkWater = value;
+    public void setThirstLevel(int value) {
+        thirstLevel += value;
     }
     public void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;

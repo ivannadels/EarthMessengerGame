@@ -91,6 +91,12 @@ public class CommandParser {
         if (words.length == 0) return "Please enter a command...";
 
         String action = words[0];
+        // Check if the action is valid and get its command type
+        if (!validCommands.containsKey(action)) {
+            return "This is not a valid command- type 'help' for more info :)";
+        }
+        action = validCommands.get(action);
+
         String parameters = (words.length > 1)
                 ? input.substring(action.length()).trim()
                 : "";
@@ -116,10 +122,10 @@ public class CommandParser {
                 return take(noun);
             case "use":
                 return use(noun);
-//            case "look":
-//                return look(player);
-//            case "inventory":
-//                return inventory();
+            case "look":
+                return player.getCurrentLocation().getDescription();
+            case "inventory":
+                return displayInventory();
             default:
                 return "This is not a valid command- type 'help' for more info :)";
     }}
@@ -142,14 +148,33 @@ public class CommandParser {
         response += "\n The item is no longer usable.";
         return response;
     }
-//
-//    public void look(Player player) {
-//        System.out.println(player.getCurrentLocation().getDescription());
-//    }
-//
-//    public void inventory() {
-//
-//    }
+
+    public String displayInventory() {
+        List<Item> inventory = player.getInventory();
+
+        if (inventory.isEmpty()) {
+            return "═══════════════════════════════════════════════════════\n" +
+                    "                    INVENTORY                          \n" +
+                    "═══════════════════════════════════════════════════════\n" +
+                    "   Your inventory is empty.                            \n" +
+                    "═══════════════════════════════════════════════════════";
+        }
+
+        StringBuilder response = new StringBuilder();
+        response.append("═══════════════════════════════════════════════════════\n");
+        response.append("                    INVENTORY                          \n");
+        response.append("═══════════════════════════════════════════════════════\n");
+
+        for (Item item : inventory) {
+            response.append("  ").append(item.getGraphic()).append(" ").append(item.getName()).append("\n");
+            response.append("     ").append(item.getDescription()).append("\n");
+            response.append("\n");
+        }
+
+        response.append("═══════════════════════════════════════════════════════");
+
+        return response.toString();
+    }
 
 //    public void showHelp() {
 //    }

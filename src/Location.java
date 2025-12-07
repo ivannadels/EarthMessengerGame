@@ -26,9 +26,8 @@ public class Location {
     private boolean isOutside;
     private boolean visited;
 
-    public Location(boolean isOutside, String name, String description) {
+    public Location(boolean isOutside, String name) {
         this.name = name;
-        this.description = description;
         this.isOutside = isOutside;
         this.connectedRooms = new HashMap<>();
         this.items = new ArrayList<>();
@@ -51,6 +50,9 @@ public class Location {
     }
     public String getDescription() {
         return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }
