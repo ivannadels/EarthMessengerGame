@@ -14,3 +14,6 @@
  *   String question = zyx.askQuestion();
  *   boolean passed = zyx.evaluateAnswer(playerResponse);
  */
+public class Alien{
+
+}
