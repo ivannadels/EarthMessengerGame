@@ -21,7 +21,6 @@ private String role;
 private String question;
 private List<String> acceptableAnswers;
 private int trustLevel;
-private boolean isChallengePassed;
 
 public Alien(String name, String role, String question, List<String> acceptableAnswers) {
     this.name = name;
@@ -29,6 +28,32 @@ public Alien(String name, String role, String question, List<String> acceptableA
     this.question = question;
     this.acceptableAnswers = acceptableAnswers;
     this.trustLevel = 0;
-    this.isChallengePassed = false;
+}
+
+    /**
+     * Greets the player and explains the rules.
+     * Does not reveal the specific role to avoid biasing the player.
+     */
+    public String greet(){
+        return "I am " + name + ".\n" +
+                "I have studied your kind for decades.\n" +
+                "You are supposed to answer a few questions.\n" +
+                "Each question should be answered only once.\n" +
+                "Prove that you are truly human.";
+}
+
+public String askQuestion(){
+        return question;
+}
+public boolean evaluateAnswer(String playerResponse){
+        String response = playerResponse.trim().toLowerCase();
+        for (String answer : acceptableAnswers) {
+            if (response.contains(answer.trim().toLowerCase())) {
+                trustLevel += 10;
+                return true;
+            }
+        }
+        trustLevel -= 5;
+        return false;
 }
 }
