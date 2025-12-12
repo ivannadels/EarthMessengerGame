@@ -56,4 +56,10 @@ public boolean evaluateAnswer(String playerResponse){
         trustLevel -= 5;
         return false;
 }
+public int getTrustLevel(){
+        return trustLevel;
+}
+public String getName(){
+        return name;
+}
 }
