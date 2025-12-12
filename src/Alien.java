@@ -5,7 +5,7 @@
  * and poses questions to evaluate the player's humanity and intentions.
  * The alien evaluates the player's response and contributes to the final judgment.
  *
- * Aliens are instantiated with different data (name, chamber type, questions) but
+ * Aliens are instantiated with different data (name, role, questions) but
  * share the same behavior.
  *
  * Example usage:
@@ -14,9 +14,21 @@
  *   String question = zyx.askQuestion();
  *   boolean passed = zyx.evaluateAnswer(playerResponse);
  */
+import java.util.List;
 public class Alien{
- private int trustScore;
-    public Alien(){
-        this.trustScore = 0;
-    }
+private String name;
+private String role;
+private String question;
+private List<String> acceptableAnswers;
+private int trustLevel;
+private boolean isChallengePassed;
+
+public Alien(String name, String role, String question, List<String> acceptableAnswers) {
+    this.name = name;
+    this.role = role;
+    this.question = question;
+    this.acceptableAnswers = acceptableAnswers;
+    this.trustLevel = 0;
+    this.isChallengePassed = false;
+}
 }
