@@ -98,13 +98,16 @@ public class Location {
     /**
      * define a location for aliens
      */
-    private Alien occupant;
+    private Alien roomOccupant;
 
-    public void setOccupant(Alien alien){
-        this.occupant = alien;
+    public void addOccupant(Alien alien){
+        this.roomOccupant = alien;
     }
     public Alien getOccupant() {
-        return occupant;
+        return roomOccupant;
+    }
+    public boolean hasOccupant(){
+        return roomOccupant != null;
     }
 }
 
