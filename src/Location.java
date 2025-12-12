@@ -95,4 +95,16 @@ public class Location {
         return connectedRooms.get(direction.toLowerCase());
     }
 
+    /**
+     * define a location for aliens
+     */
+    private Alien occupant;
+
+    public void setOccupant(Alien alien){
+        this.occupant = alien;
+    }
+    public Alien getOccupant() {
+        return occupant;
+    }
 }
+
