@@ -41,14 +41,22 @@ public class CommandParser {
         IPHONE("iphone", "phone"),
         WATERBOTTLE("water bottle", "water");
 
-        private final String[] parameters;
+        private final String[] keywords;
 
-        Noun(String... parameter) {
-            this.parameters = parameter;
+        Noun(String... keywords) {
+            this.keywords = keywords;
         }
 
+        /**
+         * Checks whether this noun matches the given item by comparing names.
+         *
+         * @param item The item to check against
+         * @return true if the item's name matches one of this noun's accepted
+         * string form i.e. keywords, false otherwise
+         *
+         */
         public boolean matchesItem(Item item) {
-            for (String p : parameters) {
+            for (String p : keywords) {
                 if (item.getName().equalsIgnoreCase(p)) {
                     return true;
                 }
@@ -65,7 +73,7 @@ public class CommandParser {
          */
         public static Noun fromString(String input) {
             for (Noun noun : Noun.values()) {
-                for (String parameter : noun.parameters) {
+                for (String parameter : noun.keywords) {
                     if (parameter.equalsIgnoreCase(input)) {
                         return noun;
                     }
@@ -76,7 +84,7 @@ public class CommandParser {
     }
 
     /**
-     * parses input and executes the corresponding command.
+     * Parses input and executes the corresponding command.
      *
      * @param input Raw player input string
      * @return Result message to display to the player
@@ -122,6 +130,7 @@ public class CommandParser {
         * "action" is the verb command and "noun" is expected to be
         *  a direction or item - depending on the command
         * */
+        // Todo: Debug waterBottle item and take water commmand
         switch (action) {
             case "move":
             case "go":
@@ -140,24 +149,47 @@ public class CommandParser {
                 return "This is not a valid command- type 'help' for more info :)";
     }}
 
+    /**
+     * Moves the player in the specified direction.
+     *
+     * @param direction The direction to move (NORTH, SOUTH, EAST, WEST)
+     * @return A message describing the movement result
+     */
     public String move(Noun direction) {
-        String response = "I have moved " + direction.parameters[0];
+        String response = "I have moved " + direction.keywords[0];
         return response;
     }
 
+    /**
+     * Adds an item to the player's inventory.
+     *
+     * @param itemType The item type to take
+     * @return A message confirming the item was taken
+     */
     public String take(Noun itemType) {
         player.addItem(itemType);
-        String response = "You have taken " + itemType.parameters[0];
+        String response = "You have taken " + itemType.keywords[0];
         response += "\n The item is in your inventory. Type 'use' to use it.";
         return response;
     }
 
+    /**
+     * Uses an item from the player's inventory.
+     *
+     * @param itemType The item type to use
+     * @return A message describing the effect of using the item
+     */
     public String use(Noun itemType) {
         player.useItem(itemType);
-        String response = "You have used " + itemType.parameters[0];
+        String response = "You have used " + itemType.keywords[0];
         return response;
     }
 
+    /**
+     * Displays the player's inventory in a formatted string.
+     *
+     * @return A formatted inventory list or a message if empty
+     */
     public String displayInventory() {
         List<Item> inventory = player.getInventory();
 
@@ -185,6 +217,11 @@ public class CommandParser {
         return response.toString();
     }
 
+    /**
+     * Shows available commands and location-specific actions.
+     *
+     * @return A formatted help message
+     */
     public String showHelp() {
         StringBuilder help = new StringBuilder();
 
@@ -220,6 +257,11 @@ public class CommandParser {
         return help.toString();
     }
 
+    /**
+     * Plays a stored message if the player has a phone.
+     *
+     * @return Empty string if message was played, or an error message
+     */
     public String playMessage() {
         Item phone = player.getItemFromInventory("iphone");
         if (phone != null) {
@@ -247,6 +289,14 @@ public class CommandParser {
         }
     }
 
+    // -------------------- Special Commands --------------------
+
+    /**
+     * Handles location-specific special commands.
+     *
+     * @param command  The full command string
+     * @return Result message after executing the special command
+     */
     private String handleSpaceshipCommands(String command) {
         Pizza pizza = (Pizza) player.getItemFromInventory("pizza");
         Item water = (WaterBottle) player.getItemFromInventory("water");

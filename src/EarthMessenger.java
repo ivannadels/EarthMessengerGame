@@ -31,6 +31,11 @@ public class EarthMessenger {
     private boolean gameLost;
     private int chambersPassed;
 
+    /**
+     * Constructs a new EarthMessenger game instance for the given player.
+     *
+     * @param playerName The name of the player
+     */
     public EarthMessenger(String playerName) {
         this.Locations = new HashMap<>();
         this.player = new Player(playerName);
@@ -73,10 +78,20 @@ public class EarthMessenger {
         scanner.close();
     }
 
+    /**
+     * Starts the game by displaying the introduction narrative.
+     */
     public void start() {
         displayIntro();
     }
 
+    /**
+     * Loads the initial game state, including locations, items,
+     * and special commands for each location
+     *
+     * @param player The player object to associate with the game
+     * @return true if loading was successful
+     */
     public boolean load(Player player) {
         // Spaceship Location set up
         Location spaceship = new Location(false, "Spaceship");
@@ -113,10 +128,15 @@ public class EarthMessenger {
         player.setCurrentLocation(Locations.get(spaceship.getName()));
 
         // Todo: add connected rooms to each exit to handle movement in and out of the spaceship
+        // Todo: add chambers 1, 2, 3
 
         return true;
     }
 
+    /**
+     * Displays the introduction narrative to the player,
+     * setting the scene for the game.
+     */
     public void displayIntro() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("───────────────────────────────────────────────────────");
@@ -174,6 +194,9 @@ public class EarthMessenger {
         System.out.println();
     }
 
+    /**
+     * Displays the outro message when the game ends.
+     */
     public void displayOutro() {
         System.out.println("Game over!");
     }
@@ -189,6 +212,15 @@ public class EarthMessenger {
         System.out.println();
     }
 
+    /**
+     * Checks whether the game has ended.
+     *
+     * @return true if the game is over (won or lost), false otherwise
+     */
+    public boolean isGameOver() {
+        return this.isGameLost() || this.isGameWon();
+    }
+
     public boolean isGameLost() {
         return gameLost;
     }
@@ -200,10 +232,6 @@ public class EarthMessenger {
     }
     public void setGameWon(boolean gameWon) {
         this.gameWon = gameWon;
-    }
-
-    public boolean isGameOver() {
-        return this.isGameLost() || this.isGameWon();
     }
 
     public void setChambersPassed(int chambersPassed) {
