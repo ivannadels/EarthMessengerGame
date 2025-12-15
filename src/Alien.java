@@ -82,6 +82,19 @@ private boolean testCompleted;
         return greeting;
     }
     /**
+     * Starts the test by showing the first question.
+     *
+     * @return Message indicating test has begun and the first question
+     */
+    public String startTest() {
+        if (testCompleted) {
+            return name + " has already tested you.";
+        }
+
+        return "\"Let us begin...\"\n\n" + askQuestion();
+    }
+
+    /**
      * Get the next question
      */
     public String askQuestion() {
