@@ -1,3 +1,31 @@
+/**
+ * Represents a question that an alien scholar asks the player.
+ *
+ * QUESTION TYPES:
+ * 1. Multiple Choice - Has options (A, B, C, D) for player to choose from
+ * 2. Open Answer (Word Question) - Player types their own answer
+ *
+ * DESIGN PHILOSOPHY:
+ * - All questions use the same class (no subclasses needed)
+ * - Questions differ only in their data (text, options, answers)
+ * - Behavior is identical: display question, check answer
+ *
+ * EXAMPLES:
+ *
+ * Multiple Choice Question:
+ *   new Question(
+ *     "What color is the sky?",
+ *     Arrays.asList("Red", "Blue", "Green"),
+ *     Arrays.asList("b", "blue")
+ *   )
+ *
+ * Open Answer Question:
+ *   new Question(
+ *     "What do humans need to breathe?",
+ *     null,  // No options = open answer
+ *     Arrays.asList("oxygen", "air", "o2")
+ *   )
+ */
 import java.util.List;
 
 public class Question {
