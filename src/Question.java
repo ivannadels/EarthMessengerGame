@@ -95,15 +95,17 @@ public class Question {
         for (String correct : acceptableAnswers) {
             String cleanCorrect = correct.toLowerCase();
             if (cleanAnswer.equals(cleanCorrect)) {
-                return true;
+                return true; // Found a match!
             }
         }
 
-        return false;
+        return false;  // No match found
     }
 
     /**
-     * Check if this is a multiple choice question
+     * Checks if this is a multiple choice question.
+     *
+     * @return True if question has options, false if open answer
      */
     public boolean isMultipleChoice() {
         return options != null && !options.isEmpty();
