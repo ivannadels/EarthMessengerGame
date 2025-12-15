@@ -67,8 +67,20 @@ public class Question {
         return result;
     }
 
+
     /**
-     * Check if the player's answer is correct
+     * Checks if the player's answer is correct.
+     *
+     * MATCHING RULES:
+     * - Case-insensitive ("Oxygen" = "oxygen" = "OXYGEN")
+     * - Spaces trimmed ("  air  " = "air")
+     * - Must match at least one acceptable answer exactly
+     *
+     * For multiple choice: Accepts both letter ("a") and full text ("yes")
+     * For open answer: Accepts any word/phrase in acceptableAnswers list
+     *
+     * @param playerAnswer The answer provided by the player
+     * @return True if answer matches any acceptable answer, false otherwise
      */
     public boolean checkAnswer(String playerAnswer) {
         // Check for empty answer
