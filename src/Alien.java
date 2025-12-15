@@ -151,8 +151,15 @@ private boolean testCompleted;
         // Move to next question
         currentQuestion = currentQuestion + 1;
 
-        return correct;
-    }
+        // Check if test is finished
+        if (currentQuestion >= questions.size()) {
+            testCompleted = true;
+            response = response + "\n" + getTestResult();
+        } else {
+            response = response + "\n" + askQuestion();
+        }
+
+        return response;
 
     /**
      * Check if there are more questions
