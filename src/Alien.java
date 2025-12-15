@@ -95,17 +95,25 @@ private boolean testCompleted;
     }
 
     /**
-     * Get the next question
+     * Returns the current question text.
+     * Shows question number and the question content (with options if multiple choice).
+     *
+     * @return Formatted question string, or message if no questions remain
      */
     public String askQuestion() {
         // Check if we have questions left
         if (currentQuestion >= questions.size()) {
-            return "I have no more questions for you.";
+            return "No more questions.";
         }
 
-        // Get current question and return it
+        // Get current question
         Question q = questions.get(currentQuestion);
-        return q.getQuestionText();
+        String questionNumber = "Question " + (currentQuestion + 1) + " of " + questions.size();
+
+        return "───────────────────────────────────────────────────────\n" +
+                questionNumber + "\n" +
+                "───────────────────────────────────────────────────────\n" +
+                q.getQuestionText();
     }
 
     /**
