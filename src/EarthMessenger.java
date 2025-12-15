@@ -266,6 +266,8 @@ public class EarthMessenger {
                         "A gentle creature waits on a vine.\n" +
                         "Usage: Type 'answer [word]'."
         );
+        // Add the empathy alien to this chamber
+        eastChamber.addOccupant(empathyAlien);
         //connections
         planetSurface.addConnection("east", eastChamber);
         eastChamber.addConnection("west", planetSurface);
