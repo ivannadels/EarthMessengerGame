@@ -115,14 +115,22 @@ private boolean testCompleted;
                 "───────────────────────────────────────────────────────\n" +
                 q.getQuestionText();
     }
-
     /**
-     * Check if player's answer is correct
+     * Evaluates the player's answer to the current question.
+     * Updates trust level based on correctness and provides feedback.
+     * Moves to next question or completes test if all questions answered.
+     *
+     * SCORING:
+     * - Correct answer: +10 trust level
+     * - Wrong answer: -5 trust level
+     *
+     * @param playerAnswer The player's answer (either "a", "b", "c" or a word/phrase)
+     * @return Feedback message and next question (or test result if finished)
      */
-    public boolean checkAnswer(String playerAnswer) {
-        // Make sure we still have questions
+    public String checkAnswer(String playerAnswer) {
+        // Make sure we have questions
         if (currentQuestion >= questions.size()) {
-            return false;
+            return "There are no more questions to answer.";
         }
 
         // Get current question
@@ -130,6 +138,8 @@ private boolean testCompleted;
 
         // Check if answer is correct
         boolean correct = q.checkAnswer(playerAnswer);
+
+        String response = "";
 
         // Update trust level
         if (correct) {
