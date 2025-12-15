@@ -183,6 +183,34 @@ public class EarthMessenger {
                 Arrays.asList("b", "give", "give them my shoes", "give shoes")
         ));
         empathyAlien = new Alien("Marshmallow", "empathy", empathyQuestions);
+
+        // === LOGIC ALIEN - CORN (North Chamber) ===
+        List<Question> logicQuestions = new ArrayList<>();
+        //q1- word answer
+        logicQuestions.add(new Question(
+                "I appear once in a minute, twice in a moment, but never in a thousand years. What am I?",
+                null,
+                Arrays.asList("m", "letter m", "the letter m", "character m")
+        ));
+        //q2- word answer
+        logicQuestions.add(new Question(
+                "Forward I am heavy, but backward I am not. What am I?",
+                null,
+                Arrays.asList("ton", "a ton", "not", "word ton")
+        ));
+        //q3-options
+        logicQuestions.add(new Question(
+                "Look at this sequence: J, F, M, A, M, J... What is the next letter?",
+                Arrays.asList("J (for July)", "A (for August)", "S (for September)", "O (for October)"),
+                Arrays.asList("a", "j")
+        ));
+        //q4-options
+        logicQuestions.add(new Question(
+                "If I say 'I am lying', am I telling the truth?",
+                Arrays.asList("Yes", "No", "It is a paradox"),
+                Arrays.asList("c", "paradox", "it is a paradox")
+        ));
+        logicAlien = new Alien("Corn", "logic", logicQuestions);
         // The Blue Spire Setting (North, Logic)
         //----------------------------------------------------
         northChamber.setShortDescription("A cold tower of blue crystal.");
