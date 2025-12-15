@@ -191,7 +191,26 @@ private boolean testCompleted;
 
             return result;
         }
+        /**
+         * Returns appropriate message when player returns to the chamber.
+         *
+         * @return Greeting if first visit, acknowledgment if test complete, or waiting message
+         */
+        public String returnMessage() {
+            if (!hasMetPlayer) {
+                return greet();
+            }
 
+            if (testCompleted) {
+                if (trustLevel >= 0) {
+                    return name + " acknowledges you with a slight nod.";
+                } else {
+                    return name + " turns away from you.";
+                }
+            }
+
+            return name + " is waiting for your answer.";
+        }
     /**
      * Get the alien's name
      */
