@@ -115,35 +115,18 @@ public class EarthMessenger {
         player.setCurrentLocation(Locations.get(spaceship.getName()));
 
         // Todo: add connected rooms to each exit to handle movement in and out of the spaceship
+        //Define locations
         Location planetSurface = new Location(true, "The Nexus");
         Location northChamber = new Location(false, "The Blue Spire");
         Location eastChamber = new Location(false, "The Living Garden");
         Location westChamber = new Location(false, "The Glass Fortress");
         Location finalChamber = new Location(false, "The Apex");
-
+//putting locations
         Locations.put(planetSurface.getName(), planetSurface);
         Locations.put(northChamber.getName(), northChamber);
         Locations.put(eastChamber.getName(), eastChamber);
         Locations.put(westChamber.getName(), westChamber);
         Locations.put(finalChamber.getName(), finalChamber);
-
-        public boolean load(Player player) {
-            // ====================================================
-            //  قدم ۱: فقط ساختن ظرف‌های خالی (برای جلوگیری از خطای کد)
-            // ====================================================
-            Location planetSurface = new Location(true, "The Nexus");
-            Location northChamber = new Location(false, "The Blue Spire");
-            Location eastChamber = new Location(false, "The Living Garden");
-            Location westChamber = new Location(false, "The Glass Fortress");
-            Location finalChamber = new Location(false, "The Apex");
-
-            // ثبت در سیستم
-            Locations.put(planetSurface.getName(), planetSurface);
-            Locations.put(northChamber.getName(), northChamber);
-            Locations.put(eastChamber.getName(), eastChamber);
-            Locations.put(westChamber.getName(), westChamber);
-            Locations.put(finalChamber.getName(), finalChamber);
-
             // ----------------------------------------------------
             // The Nexus Setting (Surface)
             //----------------------------------------------------
@@ -161,7 +144,6 @@ public class EarthMessenger {
             spaceship.addConnection("out", planetSurface);
             planetSurface.addConnection("enter ship", spaceship);
             planetSurface.addConnection("south", spaceship);
-            );
             // ----------------------------------------------------
             // The Blue Spire Setting (North, Logic)
             //----------------------------------------------------
