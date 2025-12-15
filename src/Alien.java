@@ -50,7 +50,7 @@ private boolean testCompleted;
      * Creates a new Alien with a name, chamber type, and list of questions.
      *Chamber names and alien's name are not revealing to the player to prevent mind biasing
      * @param name The alien's name (e.g., "Corn", "Marshmallow", "Water")
-     * @param chamberType The type of test ("logic", "empathy", or "trust")
+     * @param role The type of test ("logic", "empathy", or "trust")
      * @param questions List of Question objects to ask the player
      */
  public Alien(String name, String role, List<Question> questionَs) {
@@ -74,7 +74,7 @@ private boolean testCompleted;
         String greeting = "═══════════════════════════════════════════════════════\n";
         greeting = greeting + "A figure emerges from the shadows...\n\n";
         greeting = greeting + "\"Greetings, Earth Messenger.\n";
-        greeting = greeting + "I am " + name + ", Scholar of " + getChamberTypeName() + ".\n";
+        greeting = greeting + "I am " + name + ".\n";
         greeting = greeting + "I have studied your kind for decades.\n\n";
         greeting = greeting + "Prove to me that you are truly human.\"\n";
         greeting = greeting + "═══════════════════════════════════════════════════════\n";
@@ -160,7 +160,7 @@ private boolean testCompleted;
         }
 
         return response;
-
+    }
         /**
          * Generates the final result message after all questions are answered.
          * Verdict depends on final trust level:
@@ -211,24 +211,72 @@ private boolean testCompleted;
 
             return name + " is waiting for your answer.";
         }
-    /**
-     * Get the alien's name
-     */
-    public String getName() {
-        return name;
-    }
+        // ===== GETTER METHODS =====
 
-    /**
-     * Get how many questions we've answered
-     */
-    public int getQuestionsAnswered() {
-        return currentQuestion;
-    }
+        /**
+         * @return Current trust level (-20 to 40 range)
+         */
+        public int getTrustLevel() {
+            return trustLevel;
+        }
 
-    /**
-     * Get total number of questions
-     */
-    public int getTotalQuestions() {
-        return questions.size();
+        /**
+         * @return The alien's name
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * @return The role ("logic", "empathy", or "trust")
+         */
+        public String getRole() {
+            return role;
+        }
+
+        /**
+         * @return True if player has met this alien
+         */
+        public boolean hasMetPlayer() {
+            return hasMetPlayer;
+        }
+
+        /**
+         * @return True if all questions have been answered
+         */
+        public boolean isTestCompleted() {
+            return testCompleted;
+        }
+
+        /**
+         * @return True if there are more questions to ask
+         */
+        public boolean hasMoreQuestions() {
+            return currentQuestion < questions.size();
+        }
+
+        /**
+         * @return Number of questions answered so far
+         */
+        public int getQuestionsAnswered() {
+            return currentQuestion;
+        }
+
+        /**
+         * @return Total number of questions this alien has
+         */
+        public int getTotalQuestions() {
+            return questions.size();
+        }
+
+        /**
+         * Determines if this alien approves of the player.
+         * Player must complete the test AND have trust level >= 15 to pass.
+         * This means at least 2 correct answers out of 4 questions.
+         *
+         * @return True if test is complete and trust level is 15 or higher
+         */
+        public boolean approves() {
+            return testCompleted && trustLevel >= 15;
+        }
     }
-}
