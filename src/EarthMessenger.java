@@ -282,6 +282,8 @@ public class EarthMessenger {
                         "A stern guardian blocks the path.\n" +
                         "Usage: Type 'answer [word]'."
         );
+        // Add the trust alien to this chamber
+        westChamber.addOccupant(trustAlien);
         //connections
         planetSurface.addConnection("west", westChamber);
         westChamber.addConnection("east", planetSurface);
