@@ -250,6 +250,8 @@ public class EarthMessenger {
                         "A robotic entity watches you.\n" +
                         "Usage: Type 'answer [word]'."
         );
+        // Add the logic alien to this chamber
+        northChamber.addOccupant(logicAlien);
         //connections
         planetSurface.addConnection("north", northChamber);
         northChamber.addConnection("south", planetSurface);
