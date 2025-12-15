@@ -1,18 +1,39 @@
 /**
  * Represents an alien who tests the player in a specific chamber.
  *
+ * GAME ROLE:
+* Each alien tests a specific aspect of humanity
  * Each alien is assigned to one of three chambers (Logic, Empathy, or Trustworthiness)
+ * - Corn (Logic Chamber) - Tests reasoning and problem-solving
+ * - Marshmallow (Empathy Chamber) - Tests emotional intelligence and compassion
+ * - Water (Trust Chamber) - Tests honesty and integrity
+ *
+ * FUNCTIONALITY:
+ * - Greets the player when they enter the chamber
+ * - Asks a series of questions (both multiple choice and open-ended)
+ * - Evaluates player's answers and adjusts trust level
+ * - Determines if the player passes the test (trust level >= 15)
+ *
+ * SCORING SYSTEM:
+ * - Starts at trust level 0
+ * - Correct answer: +10 points
+ * - Wrong answer: -5 points
+ * - To pass: Need at least 15 points (2+ correct answers out of 4)
  * and poses questions to evaluate the player's humanity and intentions.
  * The alien evaluates the player's response and contributes to the final judgment.
  *
  * Aliens are instantiated with different data (name, role, questions) but
  * share the same behavior.
  *
+ * STATE TRACKING:
+ * - hasMetPlayer: Has the player entered this chamber?
+ * - testCompleted: Has the player finished all questions?
+ * - currentQuestion: Which question are we on? (0-3)
  * Example usage:
  *   Alien zyx = new Alien("Zyx", "logic", "What came first, chicken or egg?", acceptableAnswers);
  *   String greeting = zyx.greet();
  *   String question = zyx.askQuestion();
- *   boolean passed = zyx.evaluateAnswer(playerResponse);
+ *   boolean passed = zyx.checkAnswer(playerAnswer);
  */
 import java.util.List;
 public class Alien{
@@ -22,19 +43,25 @@ private List<Question> questions;//we have a list of question(s)
     //game tracking
 private int trustLevel;
 private int currentQuestion;
+private boolean hasMetPlayer;
+private boolean testCompleted;
 
-public Alien(String name, String role, List<Question> questionَs) {
-    this.name = name;
-    this.role = role;
-    this.questions = questions;
-    this.trustLevel = 0;
-    this.currentQuestion = 0;
-}
-
-    /**
-     * Greets the player and explains the rules.
-     * Does not reveal the specific role to avoid biasing the player.
+ /**
+     * Creates a new Alien with a name, chamber type, and list of questions.
+     *Chamber names and alien's name are not revealing to the player to prevent mind biasing
+     * @param name The alien's name (e.g., "Corn", "Marshmallow", "Water")
+     * @param chamberType The type of test ("logic", "empathy", or "trust")
+     * @param questions List of Question objects to ask the player
      */
+ public Alien(String name, String role, List<Question> questionَs) {
+     this.name = name;
+     this.role = role;
+     this.questions = questions;
+     this.trustLevel = 0;
+     this.currentQuestion = 0;
+     this.hasMetPlayer = false;
+     this.testCompleted = false;
+ }
     public String greet(){
         return "I am " + name + ".\n" +
                 "I have studied your kind for decades.\n" +
