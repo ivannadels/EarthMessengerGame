@@ -18,16 +18,17 @@ import java.util.List;
 public class Alien{
 private String name;
 private String role;
-private List<Question> questions;//we have a list of questions
-private int currentQuestionIndex;
+private List<Question> questions;//we have a list of question(s)
+    //game tracking
 private int trustLevel;
+private int currentQuestion;
 
-public Alien(String name, String role, String question, List<String> acceptableAnswers) {
+public Alien(String name, String role, List<Question> questionَs) {
     this.name = name;
     this.role = role;
-    this.question = question;
-    this.acceptableAnswers = acceptableAnswers;
+    this.questions = questions;
     this.trustLevel = 0;
+    this.currentQuestion = 0;
 }
 
     /**
@@ -41,25 +42,80 @@ public Alien(String name, String role, String question, List<String> acceptableA
                 "Each question should be answered only once.\n" +
                 "Prove that you are truly human.";
 }
-
-public String askQuestion(){
-        return question;
-}
-public boolean evaluateAnswer(String playerResponse){
-        String response = playerResponse.trim().toLowerCase();
-        for (String answer : acceptableAnswers) {
-            if (response.contains(answer.trim().toLowerCase())) {
-                trustLevel += 10;
-                return true;
-            }
+    /**
+     * Get the next question
+     */
+    public String askQuestion() {
+        // Check if we have questions left
+        if (currentQuestion >= questions.size()) {
+            return "I have no more questions for you.";
         }
-        trustLevel -= 5;
-        return false;
-}
-public int getTrustLevel(){
+
+        // Get current question and return it
+        Question q = questions.get(currentQuestion);
+        return q.getQuestionText();
+    }
+
+    /**
+     * Check if player's answer is correct
+     */
+    public boolean checkAnswer(String playerAnswer) {
+        // Make sure we still have questions
+        if (currentQuestion >= questions.size()) {
+            return false;
+        }
+
+        // Get current question
+        Question q = questions.get(currentQuestion);
+
+        // Check if answer is correct
+        boolean correct = q.checkAnswer(playerAnswer);
+
+        // Update trust level
+        if (correct) {
+            trustLevel = trustLevel + 10;
+        } else {
+            trustLevel = trustLevel - 5;
+        }
+
+        // Move to next question
+        currentQuestion = currentQuestion + 1;
+
+        return correct;
+    }
+
+    /**
+     * Check if there are more questions
+     */
+    public boolean hasMoreQuestions() {
+        return currentQuestion < questions.size();
+    }
+
+    /**
+     * Get the trust level
+     */
+    public int getTrustLevel() {
         return trustLevel;
-}
-public String getName(){
+    }
+
+    /**
+     * Get the alien's name
+     */
+    public String getName() {
         return name;
-}
+    }
+
+    /**
+     * Get how many questions we've answered
+     */
+    public int getQuestionsAnswered() {
+        return currentQuestion;
+    }
+
+    /**
+     * Get total number of questions
+     */
+    public int getTotalQuestions() {
+        return questions.size();
+    }
 }
