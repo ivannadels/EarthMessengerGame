@@ -115,8 +115,108 @@ public class EarthMessenger {
         player.setCurrentLocation(Locations.get(spaceship.getName()));
 
         // Todo: add connected rooms to each exit to handle movement in and out of the spaceship
+        Location planetSurface = new Location(true, "The Nexus");
+        Location northChamber = new Location(false, "The Blue Spire");
+        Location eastChamber = new Location(false, "The Living Garden");
+        Location westChamber = new Location(false, "The Glass Fortress");
+        Location finalChamber = new Location(false, "The Apex");
 
-        return true;
+        Locations.put(planetSurface.getName(), planetSurface);
+        Locations.put(northChamber.getName(), northChamber);
+        Locations.put(eastChamber.getName(), eastChamber);
+        Locations.put(westChamber.getName(), westChamber);
+        Locations.put(finalChamber.getName(), finalChamber);
+
+        public boolean load(Player player) {
+            // ====================================================
+            //  قدم ۱: فقط ساختن ظرف‌های خالی (برای جلوگیری از خطای کد)
+            // ====================================================
+            Location planetSurface = new Location(true, "The Nexus");
+            Location northChamber = new Location(false, "The Blue Spire");
+            Location eastChamber = new Location(false, "The Living Garden");
+            Location westChamber = new Location(false, "The Glass Fortress");
+            Location finalChamber = new Location(false, "The Apex");
+
+            // ثبت در سیستم
+            Locations.put(planetSurface.getName(), planetSurface);
+            Locations.put(northChamber.getName(), northChamber);
+            Locations.put(eastChamber.getName(), eastChamber);
+            Locations.put(westChamber.getName(), westChamber);
+            Locations.put(finalChamber.getName(), finalChamber);
+
+            // ----------------------------------------------------
+            // The Nexus Setting (Surface)
+            //----------------------------------------------------
+            planetSurface.setShortDescription("The central hub.");
+            planetSurface.setLongDescription(
+                    "You stand at the center. Red dust covers everything.\n" +
+                            "Paths lead to strange alien structures:\n" +
+                            "- NORTH: The Blue Spire\n" +
+                            "- EAST: The Living Garden\n" +
+                            "- WEST: The Glass Fortress\n" +
+                            "- UP: The Apex\n" +
+                            "- SOUTH: Your Spaceship"
+            );
+            spaceship.addConnection("exit", planetSurface);
+            spaceship.addConnection("out", planetSurface);
+            planetSurface.addConnection("enter ship", spaceship);
+            planetSurface.addConnection("south", spaceship);
+            );
+            // ----------------------------------------------------
+            // The Blue Spire Setting (North, Logic)
+            //----------------------------------------------------
+            northChamber.setShortDescription("A cold tower of blue crystal.");
+            northChamber.setLongDescription(
+                    "You are inside a tower made of cold blue crystals.\n" +
+                            "The air hums with a rhythmic, mechanical sound.\n" +
+                            "There is no chaos here, only perfect order.\n" +
+                            "A robotic entity watches you.\n" +
+                            "Usage: Type 'answer [word]'."
+            );
+            //connections
+            planetSurface.addConnection("north", northChamber);
+            northChamber.addConnection("south", planetSurface);
+            // ----------------------------------------------------
+            // The Living Garden Setting (East, Empathy)
+            //----------------------------------------------------
+            eastChamber.setShortDescription("A breathing forest.");
+            eastChamber.setLongDescription(
+                    "You are in a garden that seems to pulse with life.\n" +
+                            "The air is warm and smells of sweet nectar.\n" +
+                            "You feel the emotions of the plants around you.\n" +
+                            "A gentle creature waits on a vine.\n" +
+                            "Usage: Type 'answer [word]'."
+            );
+            //connections
+            planetSurface.addConnection("east", eastChamber);
+            eastChamber.addConnection("west", planetSurface);
+            // ----------------------------------------------------
+            // The Glass Fortress Setting (West, Trust)
+            //----------------------------------------------------
+            westChamber.setShortDescription("A hall of mirrors.");
+            westChamber.setLongDescription(
+                    "You are in a fortress made of clear glass.\n" +
+                            "There are no shadows here to hide in.\n" +
+                            "Your reflection stares back at you from every angle.\n" +
+                            "A stern guardian blocks the path.\n" +
+                            "Usage: Type 'answer [word]'."
+            );
+            //connections
+            planetSurface.addConnection("west", westChamber);
+            westChamber.addConnection("east", planetSurface);
+            // ----------------------------------------------------
+            // The Apex Setting (Up, Final)
+            //----------------------------------------------------
+            finalChamber.setShortDescription("The highest platform.");
+            finalChamber.setLongDescription("The highest point above the clouds. Judgment awaits.");
+
+
+            //connections
+            planetSurface.addConnection("up", finalChamber);
+            finalChamber.addConnection("down", planetSurface);
+            //current location set
+            player.setCurrentLocation(Locations.get(spaceship.getName()));
+            return true;
     }
 
     public void displayIntro() {
