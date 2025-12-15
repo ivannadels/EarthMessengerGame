@@ -523,5 +523,4 @@ public class EarthMessenger {
     public int getChambersPassed() {
         return chambersPassed;
     }
-
 }
