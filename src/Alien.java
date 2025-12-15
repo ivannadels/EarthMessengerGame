@@ -161,19 +161,36 @@ private boolean testCompleted;
 
         return response;
 
-    /**
-     * Check if there are more questions
-     */
-    public boolean hasMoreQuestions() {
-        return currentQuestion < questions.size();
-    }
+        /**
+         * Generates the final result message after all questions are answered.
+         * Verdict depends on final trust level:
+         * - >= 15: Approved (worthy)
+         * - >= 0: Acceptable (not opposed)
+         * - < 0: Rejected (failed)
+         *
+         * @return Formatted test result with verdict and trust level
+         */
+        private String getTestResult() {
+            String result = "═══════════════════════════════════════════════════════\n";
+            result = result + name + " steps back and studies you carefully.\n\n";
 
-    /**
-     * Get the trust level
-     */
-    public int getTrustLevel() {
-        return trustLevel;
-    }
+            if (trustLevel >= 15) {
+                result = result + "\"You have proven yourself worthy.\n";
+                result = result + "I will speak in your favor.\"\n";
+            } else if (trustLevel >= 0) {
+                result = result + "\"You are... acceptable.\n";
+                result = result + "I will not oppose you.\"\n";
+            } else {
+                result = result + "\"I am disappointed.\n";
+                result = result + "You have failed this test.\"\n";
+            }
+
+            result = result + "\nTrust Level: " + trustLevel;
+            result = result + "\n═══════════════════════════════════════════════════════\n";
+            result = result + "\nYou may return to the Nexus.";
+
+            return result;
+        }
 
     /**
      * Get the alien's name
