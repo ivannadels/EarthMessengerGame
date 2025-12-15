@@ -112,14 +112,18 @@ public class Question {
     }
 
     /**
-     * Get the question text only (without options)
+     * Gets just the question text without options.
+     *
+     * @return The raw question text
      */
     public String getText() {
         return text;
     }
 
     /**
-     * Get the options (for multiple choice)
+     * Gets the list of multiple choice options.
+     *
+     * @return List of option strings, or null if open answer question
      */
     public List<String> getOptions() {
         return options;
