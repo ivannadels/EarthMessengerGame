@@ -18,8 +18,8 @@ import java.util.List;
 public class Alien{
 private String name;
 private String role;
-private String question;
-private List<String> acceptableAnswers;
+private List<Question> questions;//we have a list of questions
+private int currentQuestionIndex;
 private int trustLevel;
 
 public Alien(String name, String role, String question, List<String> acceptableAnswers) {
