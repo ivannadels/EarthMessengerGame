@@ -62,13 +62,25 @@ private boolean testCompleted;
      this.hasMetPlayer = false;
      this.testCompleted = false;
  }
-    public String greet(){
-        return "I am " + name + ".\n" +
-                "I have studied your kind for decades.\n" +
-                "You are supposed to answer a few questions.\n" +
-                "Each question should be answered only once.\n" +
-                "Prove that you are truly human.";
-}
+    /**
+     * First greeting when player enters the chamber.
+     * Sets hasMetPlayer to true and introduces the alien and their purpose.
+     *
+     * @return A formatted greeting message
+     */
+    public String greet() {
+        hasMetPlayer = true;
+
+        String greeting = "═══════════════════════════════════════════════════════\n";
+        greeting = greeting + "A figure emerges from the shadows...\n\n";
+        greeting = greeting + "\"Greetings, Earth Messenger.\n";
+        greeting = greeting + "I am " + name + ", Scholar of " + getChamberTypeName() + ".\n";
+        greeting = greeting + "I have studied your kind for decades.\n\n";
+        greeting = greeting + "Prove to me that you are truly human.\"\n";
+        greeting = greeting + "═══════════════════════════════════════════════════════\n";
+
+        return greeting;
+    }
     /**
      * Get the next question
      */
