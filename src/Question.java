@@ -45,8 +45,11 @@ public class Question {
     }
 
     /**
-     * Get the question text to show the player
-     * Includes options if it's multiple choice
+     * Returns the full question text formatted for display.
+     * For multiple choice questions, adds lettered options (A, B, C, D).
+     * For open answer questions, just shows the question.
+     *
+     * @return Formatted question string ready to display to player
      */
     public String getQuestionText() {
         String result = text + "\n";
