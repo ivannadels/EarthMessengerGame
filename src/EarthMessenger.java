@@ -156,7 +156,6 @@ public class EarthMessenger {
         // ----------------------------------------------------
 
         // === EMPATHY ALIEN - MARSHMALLOW (East Chamber) ===
-        // ----------------------------------------------------
         List<Question> empathyQuestions = new ArrayList<>();
         //q1-word answer
         empathyQuestions.add(new Question(
@@ -240,6 +239,7 @@ public class EarthMessenger {
         ));
         trustAlien = new Alien("Water", "trust", trustQuestions);
 
+        // ----------------------------------------------------
         // The Blue Spire Setting (North, Logic)
         //----------------------------------------------------
         northChamber.setShortDescription("A cold tower of blue crystal.");
@@ -252,9 +252,11 @@ public class EarthMessenger {
         );
         // Add the logic alien to this chamber
         northChamber.addOccupant(logicAlien);
+
         //connections
         planetSurface.addConnection("north", northChamber);
         northChamber.addConnection("south", planetSurface);
+
         // ----------------------------------------------------
         // The Living Garden Setting (East, Empathy)
         //----------------------------------------------------
@@ -271,6 +273,7 @@ public class EarthMessenger {
         //connections
         planetSurface.addConnection("east", eastChamber);
         eastChamber.addConnection("west", planetSurface);
+
         // ----------------------------------------------------
         // The Glass Fortress Setting (West, Trust)
         //----------------------------------------------------
@@ -287,6 +290,7 @@ public class EarthMessenger {
         //connections
         planetSurface.addConnection("west", westChamber);
         westChamber.addConnection("east", planetSurface);
+
         // ----------------------------------------------------
         // The Apex Setting (Up, Final)
         //----------------------------------------------------
@@ -360,9 +364,60 @@ public class EarthMessenger {
     }
 
     public void displayOutro() {
-        System.out.println("Game over!");
-    }
+        System.out.println("═══════════════════════════════════════════════════════");
+        System.out.println("                    FINAL JUDGMENT                     ");
+        System.out.println("═══════════════════════════════════════════════════════");
+        System.out.println();
 
+        System.out.println("The three aliens gather before you in the Apex.");
+        System.out.println();
+        // Show each alien's verdict
+        System.out.println("Corn speaks first:");
+        if (logicAlien.approves()) {
+            System.out.println("  \"Your logic is sound. I approve.\" (Trust: " + logicAlien.getTrustLevel() + ")");
+        } else {
+            System.out.println("  \"Your reasoning is flawed. I reject you.\" (Trust: " + logicAlien.getTrustLevel() + ")");
+        }
+        System.out.println();
+
+        System.out.println("Marshmallow speaks next:");
+        if (empathyAlien.approves()) {
+            System.out.println("  \"Your heart is true. I approve.\" (Trust: " + empathyAlien.getTrustLevel() + ")");
+        } else {
+            System.out.println("  \"Your empathy is lacking. I reject you.\" (Trust: " + empathyAlien.getTrustLevel() + ")");
+        }
+        System.out.println();
+
+        System.out.println("Water speaks last:");
+        if (trustAlien.approves()) {
+            System.out.println("  \"You are trustworthy. I approve.\" (Trust: " + trustAlien.getTrustLevel() + ")");
+        } else {
+            System.out.println("  \"I cannot trust you. I reject you.\" (Trust: " + trustAlien.getTrustLevel() + ")");
+        }
+        System.out.println();
+        System.out.println("───────────────────────────────────────────────────────");
+        System.out.println();
+
+        if (gameWon) {
+            System.out.println("The three aliens speak in unison:");
+            System.out.println("\"You have proven yourself worthy, Earth Messenger.\"");
+            System.out.println("\"You possess logic, empathy, and trust.\"");
+            System.out.println("\"You are a complete human.\"");
+            System.out.println("\"We welcome you to our world.\"");
+            System.out.println();
+            System.out.println("🌟 YOU WIN! 🌟");
+        } else {
+            System.out.println("The three aliens shake their heads.");
+            System.out.println("\"A true human must have ALL three qualities:\"");
+            System.out.println("\"Logic to think, empathy to feel, and trust to connect.\"");
+            System.out.println("\"You are incomplete.\"");
+            System.out.println("\"Return to the stars, last human.\"");
+            System.out.println();
+            System.out.println("💔 GAME OVER 💔");
+        }
+
+        System.out.println("═══════════════════════════════════════════════════════");
+    }
     /**
      * Prompts the user to press Enter to continue.
      *
@@ -372,6 +427,73 @@ public class EarthMessenger {
         System.out.println("[Press Enter to continue...]");
         scanner.nextLine();
         System.out.println();
+    }
+
+    /**
+     * Checks the player's progress across all three chambers and determines win/lose conditions.
+     *
+     * GAME LOGIC:
+     * - To be considered a "complete human," the player must pass ALL THREE chambers
+     * - Each alien tests a different essential human quality:
+     *   1. Corn (Logic) - Tests reasoning and problem-solving
+     *   2. Marshmallow (Empathy) - Tests emotional intelligence and compassion
+     *   3. Water (Trust) - Tests honesty and integrity
+     *
+     * SCORING:
+     * - Each alien asks 4 questions
+     * - Correct answer: +10 trust points
+     * - Wrong answer: -5 trust points
+     * - To pass a chamber: trustLevel must be >= 15 (at least 2 correct answers)
+     *
+     * WIN CONDITION:
+     * - Player must pass ALL THREE chambers (chambersPassed == 3)
+     * - A human without logic, empathy, or trust is incomplete
+     *
+     * LOSE CONDITION:
+     * - Failing even ONE chamber means the player is not a complete human
+     * - The aliens will reject an incomplete human
+     *
+     * This method is called after each chamber test is completed to check
+     * if all three tests are done and determine the final outcome.
+     */
+    public void checkChamberProgress() {
+        int passed = 0;
+
+        // Count how many aliens approve of the player
+        if (logicAlien.isTestCompleted() && logicAlien.approves()) {
+            passed++;
+        }
+        if (empathyAlien.isTestCompleted() && empathyAlien.approves()) {
+            passed++;
+        }
+        if (trustAlien.isTestCompleted() && trustAlien.approves()) {
+            passed++;
+        }
+
+        chambersPassed = passed;
+
+        // Check win/lose conditions - must complete all three tests first
+        if (logicAlien.isTestCompleted() && empathyAlien.isTestCompleted() && trustAlien.isTestCompleted()) {
+            // Must pass ALL THREE to win (a complete human has all three qualities)
+            if (chambersPassed == 3) {
+                gameWon = true;
+            } else {
+                // Failed even one = not a complete human = game over
+                gameLost = true;
+            }
+        }
+    }
+    // Getters for the aliens
+    public Alien getLogicAlien() {
+        return logicAlien;
+    }
+
+    public Alien getEmpathyAlien() {
+        return empathyAlien;
+    }
+
+    public Alien getTrustAlien() {
+        return trustAlien;
     }
 
     public boolean isGameLost() {
