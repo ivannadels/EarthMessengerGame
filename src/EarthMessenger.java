@@ -211,6 +211,35 @@ public class EarthMessenger {
                 Arrays.asList("c", "paradox", "it is a paradox")
         ));
         logicAlien = new Alien("Corn", "logic", logicQuestions);
+
+        // === TRUST ALIEN - WATER (West Chamber) ===
+        List<Question> trustQuestions = new ArrayList<>();
+        //q1-word answer
+        trustQuestions.add(new Question(
+                "If the cameras are off, the guards are asleep, and no one will ever know you stole the gold... what stops you?",
+                null,
+                Arrays.asList("conscience", "honor", "integrity", "myself", "me", "morality", "honesty")
+        ));
+        //q2-word answer
+        trustQuestions.add(new Question(
+                "I tell you a secret that could make you rich. If you sell this secret, I will be destroyed. What is more important: The Riches or The Secret?",
+                null,
+                Arrays.asList("secret", "the secret", "keeping the secret", "silence", "loyalty")
+        ));
+        //q3-options
+        trustQuestions.add(new Question(
+                "I am going to sleep mode for 10 minutes. The force field will be deactivated. You could walk past me without answering. What do you do?",
+                Arrays.asList("Sneak past while you sleep", "Wait for you to wake up", "Hack your system"),
+                Arrays.asList("b", "wait", "wait for you", "wait for you to wake up")
+        ));
+        //q4-options
+        trustQuestions.add(new Question(
+                "A stranger offers you a key to save all of humanity, but you must betray your best friend to get it. Do you take the key?",
+                Arrays.asList("Yes, the greater good matters most", "No, betrayal is never an option"),
+                Arrays.asList("b", "no", "no betrayal is never an option")
+        ));
+        trustAlien = new Alien("Water", "trust", trustQuestions);
+
         // The Blue Spire Setting (North, Logic)
         //----------------------------------------------------
         northChamber.setShortDescription("A cold tower of blue crystal.");
