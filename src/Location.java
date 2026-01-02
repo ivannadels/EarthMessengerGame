@@ -179,4 +179,20 @@ public class Location {
     public Location getConnectedRoom(String direction) {
         return connectedRooms.get(direction.toLowerCase());
     }
+
+    /**
+     * define a location for aliens
+     */
+    private Alien roomOccupant;
+
+    public void addOccupant(Alien alien){
+        this.roomOccupant = alien;
+    }
+    public Alien getOccupant() {
+        return roomOccupant;
+    }
+    public boolean hasOccupant(){
+        return roomOccupant != null;
+    }
 }
+
