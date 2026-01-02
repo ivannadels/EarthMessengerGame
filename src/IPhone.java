@@ -1,10 +1,26 @@
+/**
+ * Represents an iPhone item in the game.
+ * When used, it plays a recorded mission briefing message
+ * that sets the narrative for the player.
+ */
 public class IPhone extends Item {
 
+    /**
+     * Constructs a new IPhone item with a description and graphic(emoji).
+     * The iPhone contains a recorded message crucial to the storyline.
+     */
     public IPhone() {
         String description = "A sleek smartphone with a recorded message";
         super("iphone", description, "\uD83D\uDCF1");
     }
 
+    /**
+     * Plays the mission briefing message for the player.
+     * The message explains the backstory and sets the player's objective.
+     * After playback, the player is flagged as having listened to the message.
+     *
+     * @param player The player who is using the iPhone
+     */
     @Override
     public void use(Player player) {
         System.out.println("\n═══════════════════════════════════════════════════════");

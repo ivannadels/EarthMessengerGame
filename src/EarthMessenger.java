@@ -1,9 +1,9 @@
 /**
  * The main controller class that manages the Earth Messenger text adventure game.
- * <p>
+ *
  * This class controls the entire game experience: initializing the game world,
  * processing player commands, tracking game state, and determining win/lose conditions.
- * <p>
+ *
  * GAME DESCRIPTION:
  * You wake up alone on a one-person ship—all humans have gone extinct, and you were
  * cryogenically frozen as humanity's last hope. Your ship has arrived at a distant planet
@@ -14,14 +14,13 @@
  * Each will test a different aspect of your character. You must prove you are truly the last
  * human from Earth and that your intentions are pure. Only if you pass their trials will
  * they welcome you and help preserve what remains of humanity.
- * <p>
+ *
  * GAME STATE TRACKING:
  * - chambersPassed: Counts how many chambers player has completed (0-3)
  * - gameWon: True if aliens accept the player
  * - gameLost: True if aliens reject the player
  *
  */
-
 import java.util.*;
 
 public class EarthMessenger {
@@ -306,6 +305,10 @@ public class EarthMessenger {
         return true;
     }
 
+    /**
+     * Displays the introduction narrative to the player,
+     * setting the scene for the game.
+     */
     public void displayIntro() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("───────────────────────────────────────────────────────");
@@ -363,6 +366,9 @@ public class EarthMessenger {
         System.out.println();
     }
 
+    /**
+     * Displays the outro message when the game ends.
+     */
     public void displayOutro() {
         System.out.println("═══════════════════════════════════════════════════════");
         System.out.println("                    FINAL JUDGMENT                     ");
