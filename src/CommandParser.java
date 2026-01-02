@@ -6,31 +6,49 @@ public class CommandParser {
 
     /**
      * Creates a CommandParser that can execute commands for the given player.
+     * Initializes the valid commands map with all recognized commands and their aliases.
      *
      * @param player The player object that will be modified by commands
      */
-    // Todo: Handle movement commands
     public CommandParser(Player player) {
         this.player = player;
+
+        // The validCommands map associates command aliases with their action names.
+        // Multiple input strings (e.g., "go", "move", "enter") map to the same action for easier processing.
         validCommands = new HashMap<>();
+
+        // Movement commands
         validCommands.put("go", "move");
         validCommands.put("move", "move");
         validCommands.put("enter", "move");
         validCommands.put("exit", "exit");
+
+        // Item interaction commands
         validCommands.put("take", "take");
         validCommands.put("get", "take");
         validCommands.put("use", "use");
+
+        // Observation commands
         validCommands.put("look", "look");
         validCommands.put("examine", "look");
+
+        // Inventory commands
         validCommands.put("inventory", "inventory");
         validCommands.put("i", "inventory");
+
+        // Puzzle/interaction commands
         validCommands.put("answer", "answer");
+
+        // Utility commands
         validCommands.put("help", "help");
         validCommands.put("play message", "play");
     }
 
     /**
      * Enum that maps string parameters/input to game nouns.
+     *
+     * We use an enum instead of strings for type safety (catching typos at compile time)
+     * and to support multiple aliases for the same noun (e.g., "iphone" or "phone").
      */
     public enum Noun {
         NORTH("north"),

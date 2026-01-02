@@ -86,7 +86,41 @@ public class EarthMessenger {
     }
 
     public boolean load(Player player) {
-        // Spaceship Location set up
+
+        // Create the Alien room occupants before setting locations
+        List<Alien> aliens = createAliens();
+        // Using stream so we don't rely on order of aliens in the list
+        Alien trustAlien = aliens.stream()
+                .filter(a -> a.getName().equals("Water"))
+                .findFirst().orElse(null);
+
+        Alien logicAlien = aliens.stream()
+                .filter(a -> a.getName().equals("Corn"))
+                .findFirst().orElse(null);
+
+        Alien empathyAlien = aliens.stream()
+                .filter(a -> a.getName().equals("Marshmallow"))
+                .findFirst().orElse(null);
+
+        // Define locations
+        Location planetSurface = new Location(true, "The Nexus");
+        Location northChamber = new Location(false, "The Blue Spire");
+        Location eastChamber = new Location(false, "The Living Garden");
+        Location westChamber = new Location(false, "The Glass Fortress");
+        Location finalChamber = new Location(false, "The Apex");
+
+        Locations.put(planetSurface.getName(), planetSurface);
+        Locations.put(northChamber.getName(), northChamber);
+        Locations.put(eastChamber.getName(), eastChamber);
+        Locations.put(westChamber.getName(), westChamber);
+        Locations.put(finalChamber.getName(), finalChamber);
+
+        /*
+         * SPACESHIP LOCATION
+         * Starting location for the player
+         * Connected to: The Nexus (exit)
+         * No alien occupant
+         */
         Location spaceship = new Location(false, "Spaceship");
         spaceship.setLongDescription(
                 "The spaceship is small and cramped. Metal walls surround you. " +
@@ -119,23 +153,19 @@ public class EarthMessenger {
 
         Locations.put(spaceship.getName(), spaceship);
         player.setCurrentLocation(Locations.get(spaceship.getName()));
+        spaceship.addConnection("exit", planetSurface);
 
-        // Todo: add connected rooms to each exit to handle movement in and out of the spaceship
-        //Define locations
-        Location planetSurface = new Location(true, "The Nexus");
-        Location northChamber = new Location(false, "The Blue Spire");
-        Location eastChamber = new Location(false, "The Living Garden");
-        Location westChamber = new Location(false, "The Glass Fortress");
-        Location finalChamber = new Location(false, "The Apex");
-//putting locations
-        Locations.put(planetSurface.getName(), planetSurface);
-        Locations.put(northChamber.getName(), northChamber);
-        Locations.put(eastChamber.getName(), eastChamber);
-        Locations.put(westChamber.getName(), westChamber);
-        Locations.put(finalChamber.getName(), finalChamber);
-        // ----------------------------------------------------
-        // The Nexus Setting (Surface)
-        //----------------------------------------------------
+        /*
+         * THE NEXUS (Planet Surface)
+         * Central hub connecting all locations
+         * Connected to:
+         *   - North: The Blue Spire
+         *   - East: The Living Garden
+         *   - West: The Glass Fortress
+         *   - Up: The Apex
+         *   - South: Spaceship
+         * No alien occupant
+         */
         planetSurface.setShortDescription("The central hub.");
         planetSurface.setLongDescription(
                 "You stand at the center. Red dust covers everything.\n" +
@@ -146,105 +176,25 @@ public class EarthMessenger {
                         "- UP: The Apex\n" +
                         "- SOUTH: Your Spaceship"
         );
-        spaceship.addConnection("exit", planetSurface);
-        spaceship.addConnection("out", planetSurface);
-        planetSurface.addConnection("enter ship", spaceship);
         planetSurface.addConnection("south", spaceship);
-        // ----------------------------------------------------
-        // CREATE THE THREE ALIENS WITH THEIR QUESTIONS
-        // ----------------------------------------------------
+        planetSurface.addConnection("north", northChamber);
+        planetSurface.addConnection("east", eastChamber);
+        planetSurface.addConnection("west", westChamber);
+        planetSurface.addConnection("up", finalChamber);
 
-        // === EMPATHY ALIEN - MARSHMALLOW (East Chamber) ===
-        List<Question> empathyQuestions = new ArrayList<>();
-        //q1-word answer
-        empathyQuestions.add(new Question(
-                "I saw a human leaking water from their eyes while smiling at a newborn. They were not in pain. What were they feeling?",
-                null,
-                Arrays.asList("joy", "happiness", "love", "tears of joy", "hope", "happy")
-        ));
-        //q2-word answer
-        empathyQuestions.add(new Question(
-                "Your friend is sitting alone in the dark, saying nothing. You don't know why, but you sit beside them and hold their hand. What are you offering them?",
-                null,
-                Arrays.asList("comfort", "support", "company", "love", "friendship", "presence", "empathy")
-        ));
-        //q3-options
-        empathyQuestions.add(new Question(
-                "It is pouring rain—a cold, endless downpour. You see a stranger standing unprotected, shivering, with water dripping from their nose. You have a large umbrella. What do you do?",
-                Arrays.asList("Keep it to myself to stay dry", "Share the umbrella and shelter them", "Tell them to buy a raincoat"),
-                Arrays.asList("b", "share", "shelter", "share the umbrella")
-        ));
-        //q4-options
-        empathyQuestions.add(new Question(
-                "You meet a traveler who has lost everything. They are barefoot on sharp rocks. You have two shoes. What is the kindest action?",
-                Arrays.asList("Walk faster so I don't see them", "Give them my shoes and I walk barefoot", "Wish them good luck"),
-                Arrays.asList("b", "give", "give them my shoes", "give shoes")
-        ));
-        empathyAlien = new Alien("Marshmallow", "empathy", empathyQuestions);
-
-        // === LOGIC ALIEN - CORN (North Chamber) ===
-        List<Question> logicQuestions = new ArrayList<>();
-        //q1- word answer
-        logicQuestions.add(new Question(
-                "I appear once in a minute, twice in a moment, but never in a thousand years. What am I?",
-                null,
-                Arrays.asList("m", "letter m", "the letter m", "character m")
-        ));
-        //q2- word answer
-        logicQuestions.add(new Question(
-                "Forward I am heavy, but backward I am not. What am I?",
-                null,
-                Arrays.asList("ton", "a ton", "not", "word ton")
-        ));
-        //q3-options
-        logicQuestions.add(new Question(
-                "Look at this sequence: J, F, M, A, M, J... What is the next letter?",
-                Arrays.asList("J (for July)", "A (for August)", "S (for September)", "O (for October)"),
-                Arrays.asList("a", "j")
-        ));
-        //q4-options
-        logicQuestions.add(new Question(
-                "If I say 'I am lying', am I telling the truth?",
-                Arrays.asList("Yes", "No", "It is a paradox"),
-                Arrays.asList("c", "paradox", "it is a paradox")
-        ));
-        logicAlien = new Alien("Corn", "logic", logicQuestions);
-
-        // === TRUST ALIEN - WATER (West Chamber) ===
-        List<Question> trustQuestions = new ArrayList<>();
-        //q1-word answer
-        trustQuestions.add(new Question(
-                "If the cameras are off, the guards are asleep, and no one will ever know you stole the gold... what stops you?",
-                null,
-                Arrays.asList("conscience", "honor", "integrity", "myself", "me", "morality", "honesty")
-        ));
-        //q2-word answer
-        trustQuestions.add(new Question(
-                "I tell you a secret that could make you rich. If you sell this secret, I will be destroyed. What is more important: The Riches or The Secret?",
-                null,
-                Arrays.asList("secret", "the secret", "keeping the secret", "silence", "loyalty")
-        ));
-        //q3-options
-        trustQuestions.add(new Question(
-                "I am going to sleep mode for 10 minutes. The force field will be deactivated. You could walk past me without answering. What do you do?",
-                Arrays.asList("Sneak past while you sleep", "Wait for you to wake up", "Hack your system"),
-                Arrays.asList("b", "wait", "wait for you", "wait for you to wake up")
-        ));
-        //q4-options
-        trustQuestions.add(new Question(
-                "A stranger offers you a key to save all of humanity, but you must betray your best friend to get it. Do you take the key?",
-                Arrays.asList("Yes, the greater good matters most", "No, betrayal is never an option"),
-                Arrays.asList("b", "no", "no betrayal is never an option")
-        ));
-        trustAlien = new Alien("Water", "trust", trustQuestions);
-
-        // ----------------------------------------------------
-        // The Blue Spire Setting (North, Logic)
-        //----------------------------------------------------
+        /*
+         * THE BLUE SPIRE (North Chamber)
+         * Tests player's logic and reasoning
+         * Connected to:
+         *   - Exit: The Nexus (back to planet surface)
+         * Alien occupant: Corn (Logic Alien)
+         *   - Asks riddles and logical puzzles
+         *   - Must be answered correctly to proceed
+         */
         northChamber.setShortDescription("A cold tower of blue crystal.");
         northChamber.setLongDescription(
                 "You are inside a tower made of cold blue crystals.\n" +
-                        "The air hums with a rhythmic, mechanical sound.\n" +
+                        "There is a soft humming in the air.\n" +
                         "There is no chaos here, only perfect order.\n" +
                         "A robotic entity watches you.\n" +
                         "Usage: Type 'answer [word]'."
@@ -253,12 +203,17 @@ public class EarthMessenger {
         northChamber.addOccupant(logicAlien);
 
         //connections
-        planetSurface.addConnection("north", northChamber);
-        northChamber.addConnection("south", planetSurface);
+        northChamber.addConnection("exit", planetSurface);
 
-        // ----------------------------------------------------
-        // The Living Garden Setting (East, Empathy)
-        //----------------------------------------------------
+        /*
+         * THE LIVING GARDEN (East Chamber)
+         * Tests player's empathy and emotional intelligence
+         * Connected to:
+         *   - West: The Nexus (back to planet surface)
+         * Alien occupant: Marshmallow (Empathy Alien)
+         *   - Asks questions about emotions and compassion
+         *   - Must demonstrate understanding of feelings
+         */
         eastChamber.setShortDescription("A breathing forest.");
         eastChamber.setLongDescription(
                 "You are in a garden that seems to pulse with life.\n" +
@@ -270,12 +225,17 @@ public class EarthMessenger {
         // Add the empathy alien to this chamber
         eastChamber.addOccupant(empathyAlien);
         //connections
-        planetSurface.addConnection("east", eastChamber);
-        eastChamber.addConnection("west", planetSurface);
+        eastChamber.addConnection("exit", planetSurface);
 
-        // ----------------------------------------------------
-        // The Glass Fortress Setting (West, Trust)
-        //----------------------------------------------------
+        /*
+         * THE GLASS FORTRESS (West Chamber)
+         * Tests player's trust and integrity
+         * Connected to:
+         *   - East: The Nexus (back to planet surface)
+         * Alien occupant: Water (Trust Alien)
+         *   - Asks questions about honesty and loyalty
+         *   - Must demonstrate trustworthiness
+         */
         westChamber.setShortDescription("A hall of mirrors.");
         westChamber.setLongDescription(
                 "You are in a fortress made of clear glass.\n" +
@@ -287,22 +247,126 @@ public class EarthMessenger {
         // Add the trust alien to this chamber
         westChamber.addOccupant(trustAlien);
         //connections
-        planetSurface.addConnection("west", westChamber);
-        westChamber.addConnection("east", planetSurface);
+        westChamber.addConnection("exit", planetSurface);
 
-        // ----------------------------------------------------
-        // The Apex Setting (Up, Final)
-        //----------------------------------------------------
+        /*
+         * THE APEX (Final Chamber)
+         * Final judgment location
+         * Connected to:
+         *   - Down: The Nexus (back to planet surface)
+         * No alien occupant
+         * Accessible only after completing all three trials
+         */
         finalChamber.setShortDescription("The highest platform.");
         finalChamber.setLongDescription("The highest point above the clouds. Judgment awaits.");
 
-
         //connections
-        planetSurface.addConnection("up", finalChamber);
         finalChamber.addConnection("down", planetSurface);
         //current location set
         player.setCurrentLocation(Locations.get(spaceship.getName()));
         return true;
+    }
+
+    /*
+     *  Create the aliens that occupy each chamber.
+     *
+     *  East Chamber (Living Garden) - Marshmallow
+     *  North Chamber (Blue Spire) - Corn
+     *  West Chamber (Glass Fortress) - Water
+     * */
+
+    public List<Alien> createAliens(){
+
+        // EMPATHY ALIEN - MARSHMALLOW (East Chamber)
+        List<Question> empathyQuestions = new ArrayList<>();
+            //q1-word answer
+            empathyQuestions.add(new Question(
+                    "I saw a human leaking water from their eyes while smiling at a newborn. They were not in pain. What were they feeling?",
+                    null,
+                    Arrays.asList("joy", "happiness", "love", "tears of joy", "hope", "happy")
+            ));
+            //q2-word answer
+            empathyQuestions.add(new Question(
+                    "Your friend is sitting alone in the dark, saying nothing. You don't know why, but you sit beside them and hold their hand. What are you offering them?",
+                    null,
+                    Arrays.asList("comfort", "support", "company", "love", "friendship", "presence", "empathy")
+            ));
+            //q3-options
+            empathyQuestions.add(new Question(
+                    "It is pouring rain—a cold, endless downpour. You see a stranger standing unprotected, shivering, with water dripping from their nose. You have a large umbrella. What do you do?",
+                    Arrays.asList("Keep it to myself to stay dry", "Share the umbrella and shelter them", "Tell them to buy a raincoat"),
+                    Arrays.asList("b", "share", "shelter", "share the umbrella")
+            ));
+            //q4-options
+            empathyQuestions.add(new Question(
+                    "You meet a traveler who has lost everything. They are barefoot on sharp rocks. You have two shoes. What is the kindest action?",
+                    Arrays.asList("Walk faster so I don't see them", "Give them my shoes and I walk barefoot", "Wish them good luck"),
+                    Arrays.asList("b", "give", "give them my shoes", "give shoes")
+            ));
+        empathyAlien = new Alien("Marshmallow", "empathy", empathyQuestions);
+
+        // LOGIC ALIEN - CORN (North Chamber)
+        List<Question> logicQuestions = new ArrayList<>();
+            //q1- word answer
+            logicQuestions.add(new Question(
+                    "I appear once in a minute, twice in a moment, but never in a thousand years. What am I?",
+                    null,
+                    Arrays.asList("m", "letter m", "the letter m", "character m")
+            ));
+            //q2- word answer
+            logicQuestions.add(new Question(
+                    "Forward I am heavy, but backward I am not. What am I?",
+                    null,
+                    Arrays.asList("ton", "a ton", "not", "word ton")
+            ));
+            //q3-options
+            logicQuestions.add(new Question(
+                    "Look at this sequence: J, F, M, A, M, J... What is the next letter?",
+                    Arrays.asList("J (for July)", "A (for August)", "S (for September)", "O (for October)"),
+                    Arrays.asList("a", "j")
+            ));
+            //q4-options
+            logicQuestions.add(new Question(
+                    "If I say 'I am lying', am I telling the truth?",
+                    Arrays.asList("Yes", "No", "It is a paradox"),
+                    Arrays.asList("c", "paradox", "it is a paradox")
+            ));
+        logicAlien = new Alien("Corn", "logic", logicQuestions);
+
+        // TRUST ALIEN - WATER (West Chamber)
+        List<Question> trustQuestions = new ArrayList<>();
+            //q1-word answer
+            trustQuestions.add(new Question(
+                    "If the cameras are off, the guards are asleep, and no one will ever know you stole the gold... what stops you?",
+                    null,
+                    Arrays.asList("conscience", "honor", "integrity", "myself", "me", "morality", "honesty")
+            ));
+            //q2-word answer
+            trustQuestions.add(new Question(
+                    "I tell you a secret that could make you rich. If you sell this secret, I will be destroyed. What is more important: The Riches or The Secret?",
+                    null,
+                    Arrays.asList("secret", "the secret", "keeping the secret", "silence", "loyalty")
+            ));
+            //q3-options
+            trustQuestions.add(new Question(
+                    "I am going to sleep mode for 10 minutes. The force field will be deactivated. You could walk past me without answering. What do you do?",
+                    Arrays.asList("Sneak past while you sleep", "Wait for you to wake up", "Hack your system"),
+                    Arrays.asList("b", "wait", "wait for you", "wait for you to wake up")
+            ));
+            //q4-options
+            trustQuestions.add(new Question(
+                    "A stranger offers you a key to save all of humanity, but you must betray your best friend to get it. Do you take the key?",
+                    Arrays.asList("Yes, the greater good matters most", "No, betrayal is never an option"),
+                    Arrays.asList("b", "no", "no betrayal is never an option")
+            ));
+        trustAlien = new Alien("Water", "trust", trustQuestions);
+
+        List<Alien> aliens = new ArrayList<>();
+        aliens.add(trustAlien);
+        aliens.add(logicAlien);
+        aliens.add(empathyAlien);
+
+        return aliens;
     }
 
     /**
