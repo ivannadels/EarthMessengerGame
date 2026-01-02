@@ -62,11 +62,13 @@ public class EarthMessenger {
         String playerName = scanner.nextLine().trim();
         System.out.println();
 
+        // Initiate new game class object
         EarthMessenger earthMessenger = new EarthMessenger(playerName);
         if(earthMessenger.load(earthMessenger.player)){
             earthMessenger.start();
         };
 
+        // Game loop starts
         while (!earthMessenger.isGameOver()) {
             System.out.print("> ");
             String input = scanner.nextLine();

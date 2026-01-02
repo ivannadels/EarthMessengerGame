@@ -95,6 +95,7 @@ public class CommandParser {
         String[] words = input.split("\\s+");
 
         if (words.length == 0) return "Please enter a command...";
+
         // Check if this is a location-specific special command
         Location currentLocation = player.getCurrentLocation();
         if (currentLocation.hasSpecialCommand(input)) {
