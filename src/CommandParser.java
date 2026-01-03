@@ -3,6 +3,7 @@ import java.util.*;
 public class CommandParser {
     private Map<String, String> validCommands;  // Maps verbs to command types
     private Player player;
+    private EarthMessenger game;
 
     /**
      * Creates a CommandParser that can execute commands for the given player.
@@ -10,8 +11,9 @@ public class CommandParser {
      *
      * @param player The player object that will be modified by commands
      */
-    public CommandParser(Player player) {
+    public CommandParser(EarthMessenger game, Player player) {
         this.player = player;
+        this.game = game;
 
         // The validCommands map associates command aliases with their action names.
         // Multiple input strings (e.g., "go", "move", "enter") map to the same action for easier processing.
@@ -38,10 +40,14 @@ public class CommandParser {
 
         // Puzzle/interaction commands
         validCommands.put("answer", "answer");
+        validCommands.put("greet", "greet");
+        validCommands.put("start",  "start");
 
         // Utility commands
         validCommands.put("help", "help");
         validCommands.put("play message", "play");
+
+
     }
 
     /**
@@ -57,12 +63,21 @@ public class CommandParser {
         WEST("west"),
         PIZZA("pizza"),
         IPHONE("iphone", "phone"),
-        WATERBOTTLE("water bottle", "water");
+        WATERBOTTLE("waterBottle", "water bottle", "water");
 
         private final String[] keywords;
 
         Noun(String... keywords) {
             this.keywords = keywords;
+        }
+
+        /**
+         * Gets the primary name (first keyword) of this noun.
+         *
+         * @return The primary keyword string
+         */
+        public String getName() {
+            return keywords[0];
         }
 
         /**
@@ -108,7 +123,8 @@ public class CommandParser {
      * @return Result message to display to the player
      */
 
-    public String parse(String input) {
+    public String parse(Scanner scanner, String input) {
+
         input = input.toLowerCase().trim();
         String[] words = input.split("\\s+");
 
@@ -118,6 +134,9 @@ public class CommandParser {
         Location currentLocation = player.getCurrentLocation();
         if (currentLocation.hasSpecialCommand(input)) {
             return handleSpecialCommand(input, currentLocation);
+        }
+        else if(player.getCurrentQuestion()!=null){
+            return currentLocation.getOccupant().checkAnswer(player, input);
         }
 
         String action = words[0];
@@ -141,7 +160,7 @@ public class CommandParser {
             try {
                 noun = Noun.fromString(parameters);
             } catch (IllegalArgumentException e) {
-                return "Unknown noun: " + parameters;
+                return "\"" + parameters + "\" is not recognizable.\nTry keeping commands simple. Type 'help' to see what you can do.";
             }
         }
 
@@ -154,10 +173,19 @@ public class CommandParser {
             case "move":
             case "go":
                 return move(noun);
+            case "enter":
+                return enter();
+            case "exit":
+                return exit();
             case "take":
                 return take(noun);
             case "use":
                 return use(noun);
+            case "greet":
+            case "talk":
+                return greet();
+            case "start":
+                return startTest();
             case "look":
                 return player.getCurrentLocation().getLongDescription();
             case "inventory":
@@ -170,15 +198,93 @@ public class CommandParser {
 
     /**
      * Moves the player in the specified direction.
+     * Checks if there's a connected room in the specified direction and moves the player there.
      *
-     * @param direction The direction to move (NORTH, SOUTH, EAST, WEST)
+     * @param direction The direction to move (NORTH, SOUTH, EAST, WEST, EXIT)
      * @return A message describing the movement result
      */
     public String move(Noun direction) {
-        String response = "I have moved " + direction.keywords[0];
+        Location currentLocation = player.getCurrentLocation();
+        String directionKey = direction.getName().toLowerCase();
+
+        // Check if there's a connected room in this direction
+        if (!currentLocation.hasConnection(directionKey)) {
+            return "You can't go " + directionKey + " from here.";
+        }
+
+        // Get the connected location
+        Location nextLocation = currentLocation.getConnectedRoom(directionKey);
+
+        if (nextLocation == null) {
+            return "There's no path in that direction.";
+        }
+
+        // Move the player to the new location
+        player.setCurrentLocation(nextLocation);
+        String response = nextLocation.getShortDescription();
+
         return response;
     }
 
+    public String enter() {
+        Location currentLocation = player.getCurrentLocation();
+
+        String response = "You enter " + currentLocation.getName() + ".\n\n";
+
+        if (!currentLocation.isVisited()) {
+            response += currentLocation.getLongDescription();
+            currentLocation.setVisited(true);
+        }
+        return response;
+    }
+
+    public String greet(){
+        Location currentLocation = player.getCurrentLocation();
+        if(!currentLocation.hasOccupant()){
+            return "There is no one to speak to here...";
+        }
+        Alien occupant  = currentLocation.getOccupant();
+        return occupant.greet();
+    }
+
+    public String startTest(){
+        Location currentLocation = player.getCurrentLocation();
+        Alien occupant = currentLocation.getOccupant();
+        if(occupant == null){
+            return "There is no one to speak to here...";
+        }
+        else if(occupant.hasMetPlayer()){
+            return occupant.startTest(player);
+        }
+        else {
+            return "You must first greet the chamber's keeper. Type \"greet\"";
+        }
+    }
+
+    public String exit(){
+        Location currentLocation = player.getCurrentLocation();
+
+        if(currentLocation.hasBeenCompleted() && currentLocation.getConnectedRoom("exit") != null){
+            Location exitRoom = currentLocation.getConnectedRoom("exit");
+            player.setCurrentLocation(exitRoom);
+            String response =  "You exit " + currentLocation.getName() + " and arrive in " + exitRoom.getName() + ".";
+            if(!exitRoom.isVisited()){
+                response += "\n" +  exitRoom.getLongDescription();
+                exitRoom.setVisited(true);
+            }
+            return response;
+        }
+        else if(currentLocation.getName()!="Spaceship"){
+            return "The chamber’s wards hold firm. You may not depart until its trial is complete.";
+        }
+        else if(currentLocation.getName().equals("Spaceship")){
+            // if we are on the spaceship, use spaceship specific language
+            return handleSpaceshipCommands("open door");
+        }
+        else{
+            return "No exit reveals itself. Perhaps you should look around more carefully.";
+        }
+    }
     /**
      * Adds an item to the player's inventory.
      *
@@ -186,9 +292,28 @@ public class CommandParser {
      * @return A message confirming the item was taken
      */
     public String take(Noun itemType) {
-        player.addItem(itemType);
-        String response = "You have taken " + itemType.keywords[0];
-        response += "\n The item is in your inventory. Type 'use' to use it.";
+        Location currentLocation = player.getCurrentLocation();
+
+        // Find the matching item in the location using the noun's keywords
+        Item itemToTake = null;
+        for (Item item : currentLocation.getItems()) {
+            if (itemType.matchesItem(item)) {
+                itemToTake = item;
+                break;
+            }
+        }
+
+        // Check if the item is available in the current location
+        if (itemToTake == null || !currentLocation.isItemAvailable(itemToTake.getName())) {
+            return "There is no " + itemType.toString().toLowerCase() + " here to take.";
+        }
+
+        // Remove item from location and add to player inventory
+        currentLocation.removeItem(itemToTake);
+        player.addItem(itemToTake);
+
+        String response = "You have taken the " + itemToTake.getName() + ".";
+        response += "\nThe item is in your inventory. Type 'use " + itemToTake.getName() + "' to use it.";
         return response;
     }
 
@@ -320,7 +445,9 @@ public class CommandParser {
         Pizza pizza = (Pizza) player.getItemFromInventory("pizza");
         Item water = (WaterBottle) player.getItemFromInventory("water");
         Item phone = (IPhone) player.getItemFromInventory("phone");
-
+        boolean compartmentsOpened = player.getCurrentLocation().hasBeenSearched();
+        boolean spaceshipCompleted = player.getCurrentLocation().hasBeenSearched() && player.hasListenedToMessage()
+                                && player.getHungerLevel()!=5 && player.getThirstLevel()!=5;
         switch (command) {
             case "unlock door":
             case "open door":
@@ -335,6 +462,7 @@ public class CommandParser {
                 }
             case "open compartments":
             case "check compartments":
+                player.getCurrentLocation().setSearched(true);
                 return "You open the compartments. Inside you find:\n"
                         + "- A frozen pizza\n"
                         + "- A water bottle\n"
@@ -342,6 +470,9 @@ public class CommandParser {
 
             case "microwave pizza":
             case "use microwave":
+                if (!compartmentsOpened) {
+                    return "There is no microwave here... maybe check the compartments.";
+                }
                 if (pizza!=null) {
                     if (pizza.isFrozen()) {
                         pizza.setFrozen(false);
@@ -350,28 +481,41 @@ public class CommandParser {
                         return "The pizza is already microwaved and ready to eat.";
                     }
                 } else {
-                    return "You don’t have a pizza to microwave.";
+                    return "You don't have a pizza to microwave. Try taking it from the compartments first.";
                 }
 
             case "eat pizza":
+                if (!compartmentsOpened) {
+                    return "There is no pizza here... maybe check the compartments.";
+                }
                 if (pizza!=null) {
                     if (!pizza.isFrozen()){
                         pizza.use(player);
+                        if(spaceshipCompleted) {
+                            game.setChambersPassed(game.getChambersPassed() + 1);
+                        }
                         return "You eat the warm pizza. You immediately feel stronger.";
                     } else {
                         return "The pizza is frozen solid. Maybe you should microwave it first.";
                     }
                 } else {
-                    return "You don’t have a pizza to eat.";
+                    return "There is no pizza here... maybe check the compartments.\"";
                 }
 
             case "drink water":
+                if (!compartmentsOpened) {
+                    return "There is no water here... maybe check the compartments.";
+                }
                 if (water!=null) {
                     water.use(player);
+                    if(spaceshipCompleted) {
+                        game.setChambersPassed(game.getChambersPassed() + 1);
+                    }
                     return "You drink the water. Your thirst is quenched.";
                 } else {
-                    return "You don’t have a water bottle.";
+                    return "You don't have a water bottle... maybe check the compartments.";
                 }
+
             case "check systems":
             case "examine systems":
                 return "The control systems are mostly dead. Only life support remains active.";

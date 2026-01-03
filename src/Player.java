@@ -17,6 +17,8 @@ public class Player {
     private int thirstLevel;
     private int maxThirstLevel;
     private static Location currentLocation;
+    private Question currentQuestion;
+    private EarthMessenger game;
 
     /**
      * Constructs a new player with the given name.
@@ -24,7 +26,7 @@ public class Player {
      *
      * @param name The player's name
      */
-    public Player(String name) {
+    public Player(String name,  EarthMessenger game) {
         inventory = new ArrayList<>();
         this.name = name;
         hasListenedToMessage = false;
@@ -32,6 +34,9 @@ public class Player {
         thirstLevel = 0;
         maxHungerLevel = 5;
         maxThirstLevel = 5;
+        currentQuestion = null;
+        currentLocation = null;
+        this.game = game;
     }
 
     /**
@@ -54,21 +59,20 @@ public class Player {
     /**
      * Adds an item from the current location to the player's inventory.
      *
-     * @param itemToAdd The noun representing the item to add
+     * @param item The item object to add
      */
-    public void addItem(CommandParser.Noun itemToAdd) {
-        Item itemInLocation = currentLocation.getItems().stream()
-                .filter(item -> itemToAdd.matchesItem(item))
-                .findFirst()
-                .orElse(null);
-
-        if (itemInLocation != null) {
-            inventory.add(itemInLocation);
-            currentLocation.removeItem(itemInLocation);
-            System.out.println("Added: " + itemInLocation.getName());
-        } else {
-            System.out.println("No such item found in location.");
-        }
+    public void addItem(Item item) {
+        inventory.add(item);
+        System.out.println("Added: " + item.getName());
+}
+    public Question getCurrentQuestion() {
+        return currentQuestion;
+    }
+    public void setCurrentQuestion(Question currentQuestion) {
+        this.currentQuestion = currentQuestion;
+    }
+    public EarthMessenger getGame() {
+        return game;
     }
 
     /**

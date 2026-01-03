@@ -27,8 +27,7 @@ public class EarthMessenger {
     private Player player;
     private Map<String, Location> Locations;
     private CommandParser parser;
-    private boolean gameWon;
-    private boolean gameLost;
+    private boolean gameOver = false;
     private int chambersPassed;
 
     // Store the three aliens
@@ -38,9 +37,7 @@ public class EarthMessenger {
 
     public EarthMessenger(String playerName) {
         this.Locations = new HashMap<>();
-        this.player = new Player(playerName);
-        this.gameWon = false;
-        this.gameLost = false;
+        this.player = new Player(playerName, this);
         this.chambersPassed = 0;
     }
 
@@ -65,19 +62,17 @@ public class EarthMessenger {
         // Initiate new game class object
         EarthMessenger earthMessenger = new EarthMessenger(playerName);
         if (earthMessenger.load(earthMessenger.player)) {
-            earthMessenger.start();
+            //earthMessenger.start();
+           earthMessenger.player.setCurrentLocation(earthMessenger.Locations.get("The Blue Spire"));
         }
-        ;
-
         // Game loop starts
         while (!earthMessenger.isGameOver()) {
             System.out.print("> ");
             String input = scanner.nextLine();
-            CommandParser parser = new CommandParser(earthMessenger.player);
-            System.out.println(parser.parse(input));
+            CommandParser parser = new CommandParser(earthMessenger, earthMessenger.player);
+            System.out.println(parser.parse(scanner, input));
         }
 
-        earthMessenger.displayOutro();
         scanner.close();
     }
 
@@ -134,8 +129,8 @@ public class EarthMessenger {
         Item pizza = new Pizza();
         Item iPhone = new IPhone();
         Item watterBottle = new WaterBottle();
+
         // Spaceship specific commands
-        // Todo: Test + handle all the spaceship specific commands
         spaceship.addSpecialCommand("unlock door", "open door");
         spaceship.addSpecialCommand("open door", "open door");
         spaceship.addSpecialCommand("open compartments", "open compartments");
@@ -147,9 +142,9 @@ public class EarthMessenger {
         spaceship.addSpecialCommand("check systems", "check systems");
         spaceship.addSpecialCommand("examine systems", "examine systems");
 
-        spaceship.addItem(pizza);
-        spaceship.addItem(iPhone);
-        spaceship.addItem(watterBottle);
+        spaceship.addItem(pizza, false);
+        spaceship.addItem(iPhone, true);
+        spaceship.addItem(watterBottle, false);
 
         Locations.put(spaceship.getName(), spaceship);
         player.setCurrentLocation(Locations.get(spaceship.getName()));
@@ -166,16 +161,15 @@ public class EarthMessenger {
          *   - South: Spaceship
          * No alien occupant
          */
-        planetSurface.setShortDescription("The central hub.");
         planetSurface.setLongDescription(
                 "You stand at the center. Red dust covers everything.\n" +
                         "Paths lead to strange alien structures:\n" +
                         "- NORTH: The Blue Spire\n" +
                         "- EAST: The Living Garden\n" +
                         "- WEST: The Glass Fortress\n" +
-                        "- UP: The Apex\n" +
                         "- SOUTH: Your Spaceship"
         );
+        planetSurface.setShortDescription(planetSurface.getLongDescription());
         planetSurface.addConnection("south", spaceship);
         planetSurface.addConnection("north", northChamber);
         planetSurface.addConnection("east", eastChamber);
@@ -191,18 +185,21 @@ public class EarthMessenger {
          *   - Asks riddles and logical puzzles
          *   - Must be answered correctly to proceed
          */
-        northChamber.setShortDescription("A cold tower of blue crystal.");
+        northChamber.setShortDescription(
+                "You travel north and find a towering spire of cold blue crystal. Type 'enter' to step inside."
+        );
         northChamber.setLongDescription(
                 "You are inside a tower made of cold blue crystals.\n" +
                         "There is a soft humming in the air.\n" +
                         "There is no chaos here, only perfect order.\n" +
                         "A robotic entity watches you.\n" +
-                        "Usage: Type 'answer [word]'."
+                        "Try greeting him...\n"
         );
         // Add the logic alien to this chamber
         northChamber.addOccupant(logicAlien);
 
         //connections
+        northChamber.addConnection("south", planetSurface);
         northChamber.addConnection("exit", planetSurface);
 
         /*
@@ -214,17 +211,20 @@ public class EarthMessenger {
          *   - Asks questions about emotions and compassion
          *   - Must demonstrate understanding of feelings
          */
-        eastChamber.setShortDescription("A breathing forest.");
+        eastChamber.setShortDescription(
+                "A living forest breathes softly around you. Type 'enter' to step inside."
+        );
         eastChamber.setLongDescription(
                 "You are in a garden that seems to pulse with life.\n" +
                         "The air is warm and smells of sweet nectar.\n" +
                         "You feel the emotions of the plants around you.\n" +
                         "A gentle creature waits on a vine.\n" +
-                        "Usage: Type 'answer [word]'."
+                        "Try greeting him...\n"
         );
         // Add the empathy alien to this chamber
         eastChamber.addOccupant(empathyAlien);
         //connections
+        eastChamber.addConnection("west", planetSurface);
         eastChamber.addConnection("exit", planetSurface);
 
         /*
@@ -236,17 +236,20 @@ public class EarthMessenger {
          *   - Asks questions about honesty and loyalty
          *   - Must demonstrate trustworthiness
          */
-        westChamber.setShortDescription("A hall of mirrors.");
+        westChamber.setShortDescription(
+                "A hall of mirrors glimmers before you. Type 'enter' to step inside."
+        );
         westChamber.setLongDescription(
                 "You are in a fortress made of clear glass.\n" +
                         "There are no shadows here to hide in.\n" +
                         "Your reflection stares back at you from every angle.\n" +
-                        "A stern guardian blocks the path.\n" +
-                        "Usage: Type 'answer [word]'."
+                        "A stern guardian blocks the path. \n" +
+                        "Try greeting him...\n"
         );
         // Add the trust alien to this chamber
         westChamber.addOccupant(trustAlien);
         //connections
+        westChamber.addConnection("east", planetSurface);
         westChamber.addConnection("exit", planetSurface);
 
         /*
@@ -431,63 +434,70 @@ public class EarthMessenger {
     }
 
     /**
-     * Displays the outro message when the game ends.
+     * Builds and returns the outro message when the game ends.
      */
-    public void displayOutro() {
-        System.out.println("═══════════════════════════════════════════════════════");
-        System.out.println("                    FINAL JUDGMENT                     ");
-        System.out.println("═══════════════════════════════════════════════════════");
-        System.out.println();
+    public String getOutro() {
+        StringBuilder sb = new StringBuilder();
 
-        System.out.println("The three aliens gather before you in the Apex.");
-        System.out.println();
-        // Show each alien's verdict
-        System.out.println("Corn speaks first:");
+        sb.append("═══════════════════════════════════════════════════════\n");
+        sb.append("                    FINAL JUDGMENT                     \n");
+        sb.append("═══════════════════════════════════════════════════════\n\n");
+
+        sb.append("The three beings gather before you.\n\n");
+        boolean gameWon = logicAlien.approves() && empathyAlien.approves()&& trustAlien.approves();
+
+        // Corn (logic)
+        sb.append("Corn speaks first:\n");
         if (logicAlien.approves()) {
-            System.out.println("  \"Your logic is sound. I approve.\" (Trust: " + logicAlien.getTrustLevel() + ")");
+            sb.append("  \"Your logic is sound. I approve.\" (Trust: ")
+                    .append(logicAlien.getTrustLevel()).append(")\n\n");
         } else {
-            System.out.println("  \"Your reasoning is flawed. I reject you.\" (Trust: " + logicAlien.getTrustLevel() + ")");
+            sb.append("  \"Your reasoning is flawed. I reject you.\" (Trust: ")
+                    .append(logicAlien.getTrustLevel()).append(")\n\n");
         }
-        System.out.println();
 
-        System.out.println("Marshmallow speaks next:");
+        // Marshmallow (empathy)
+        sb.append("Marshmallow speaks next:\n");
         if (empathyAlien.approves()) {
-            System.out.println("  \"Your heart is true. I approve.\" (Trust: " + empathyAlien.getTrustLevel() + ")");
+            sb.append("  \"Your heart is true. I approve.\" (Trust: ")
+                    .append(empathyAlien.getTrustLevel()).append(")\n\n");
         } else {
-            System.out.println("  \"Your empathy is lacking. I reject you.\" (Trust: " + empathyAlien.getTrustLevel() + ")");
+            sb.append("  \"Your empathy is lacking. I reject you.\" (Trust: ")
+                    .append(empathyAlien.getTrustLevel()).append(")\n\n");
         }
-        System.out.println();
 
-        System.out.println("Water speaks last:");
+        // Water (trust)
+        sb.append("Water speaks last:\n");
         if (trustAlien.approves()) {
-            System.out.println("  \"You are trustworthy. I approve.\" (Trust: " + trustAlien.getTrustLevel() + ")");
+            sb.append("  \"You are trustworthy. I approve.\" (Trust: ")
+                    .append(trustAlien.getTrustLevel()).append(")\n\n");
         } else {
-            System.out.println("  \"I cannot trust you. I reject you.\" (Trust: " + trustAlien.getTrustLevel() + ")");
+            sb.append("  \"I cannot trust you. I reject you.\" (Trust: ")
+                    .append(trustAlien.getTrustLevel()).append(")\n\n");
         }
-        System.out.println();
-        System.out.println("───────────────────────────────────────────────────────");
-        System.out.println();
 
+        sb.append("───────────────────────────────────────────────────────\n\n");
+
+        // Final outcome
         if (gameWon) {
-            System.out.println("The three aliens speak in unison:");
-            System.out.println("\"You have proven yourself worthy, Earth Messenger.\"");
-            System.out.println("\"You possess logic, empathy, and trust.\"");
-            System.out.println("\"You are a complete human.\"");
-            System.out.println("\"We welcome you to our world.\"");
-            System.out.println();
-            System.out.println("🌟 YOU WIN! 🌟");
+            sb.append("The three beings speak in unison:\n");
+            sb.append("\"You have proven yourself worthy, Earth Messenger.\"\n");
+            sb.append("\"You possess logic, empathy, and trust.\"\n");
+            sb.append("\"You are a complete human.\"\n");
+            sb.append("\"We welcome you to our world.\"\n");
         } else {
-            System.out.println("The three aliens shake their heads.");
-            System.out.println("\"A true human must have ALL three qualities:\"");
-            System.out.println("\"Logic to think, empathy to feel, and trust to connect.\"");
-            System.out.println("\"You are incomplete.\"");
-            System.out.println("\"Return to the stars, last human.\"");
-            System.out.println();
-            System.out.println("💔 GAME OVER 💔");
+            sb.append("The three beings shake their heads.\n");
+            sb.append("\"A true human must have ALL three qualities:\"\n");
+            sb.append("\"Logic to think, empathy to feel, and trust to connect.\"\n");
+            sb.append("\"You are incomplete.\"\n");
+            sb.append("\"Return to the stars... alien\"\n");
         }
 
-        System.out.println("═══════════════════════════════════════════════════════");
+        sb.append("═══════════════════════════════════════════════════════");
+
+        return sb.toString();
     }
+
     /**
      * Prompts the user to press Enter to continue.
      *
@@ -499,98 +509,22 @@ public class EarthMessenger {
         System.out.println();
     }
 
-    /**
-     * Checks the player's progress across all three chambers and determines win/lose conditions.
-     *
-     * GAME LOGIC:
-     * - To be considered a "complete human," the player must pass ALL THREE chambers
-     * - Each alien tests a different essential human quality:
-     *   1. Corn (Logic) - Tests reasoning and problem-solving
-     *   2. Marshmallow (Empathy) - Tests emotional intelligence and compassion
-     *   3. Water (Trust) - Tests honesty and integrity
-     *
-     * SCORING:
-     * - Each alien asks 4 questions
-     * - Correct answer: +10 trust points
-     * - Wrong answer: -5 trust points
-     * - To pass a chamber: trustLevel must be >= 15 (at least 2 correct answers)
-     *
-     * WIN CONDITION:
-     * - Player must pass ALL THREE chambers (chambersPassed == 3)
-     * - A human without logic, empathy, or trust is incomplete
-     *
-     * LOSE CONDITION:
-     * - Failing even ONE chamber means the player is not a complete human
-     * - The aliens will reject an incomplete human
-     *
-     * This method is called after each chamber test is completed to check
-     * if all three tests are done and determine the final outcome.
-     */
-    public void checkChamberProgress() {
-        int passed = 0;
-
-        // Count how many aliens approve of the player
-        if (logicAlien.isTestCompleted() && logicAlien.approves()) {
-            passed++;
-        }
-        if (empathyAlien.isTestCompleted() && empathyAlien.approves()) {
-            passed++;
-        }
-        if (trustAlien.isTestCompleted() && trustAlien.approves()) {
-            passed++;
-        }
-
-        chambersPassed = passed;
-
-        // Check win/lose conditions - must complete all three tests first
-        if (logicAlien.isTestCompleted() && empathyAlien.isTestCompleted() && trustAlien.isTestCompleted()) {
-            // Must pass ALL THREE to win (a complete human has all three qualities)
-            if (chambersPassed == 3) {
-                gameWon = true;
-            } else {
-                // Failed even one = not a complete human = game over
-                gameLost = true;
-            }
-        }
-    }
-    // Getters for the aliens
-    public Alien getLogicAlien() {
-        return logicAlien;
+    public Map<String, Location> getLocations() {
+        return this.Locations;
     }
 
-    public Alien getEmpathyAlien() {
-        return empathyAlien;
-    }
-
-    public Alien getTrustAlien() {
-        return trustAlien;
-    }
-
-    public boolean isGameLost() {
-        return gameLost;
-    }
-
-    public void setGameLost(boolean gameLost) {
-        this.gameLost = gameLost;
-    }
-
-    public boolean isGameWon() {
-        return gameWon;
-    }
-
-    public void setGameWon(boolean gameWon) {
-        this.gameWon = gameWon;
-    }
-
-    public boolean isGameOver() {
-        return this.isGameLost() || this.isGameWon();
-    }
-
-    public void setChambersPassed(int chambersPassed) {
-        this.chambersPassed = chambersPassed;
+    public void addToChambersPassed() {
+        this.chambersPassed += 1;
     }
 
     public int getChambersPassed() {
         return chambersPassed;
     }
+    public  boolean isGameOver(){
+        return this.gameOver;
+    }
+    public void setGameOver(boolean gameOver){
+        this.gameOver = gameOver;
+    }
+
 }

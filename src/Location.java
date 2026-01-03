@@ -23,10 +23,20 @@ public class Location {
     private String longDescription;
     private String shortDescription;
     private List<Item> items;
+    private List<Item> availableItems;
     private Map<String, Location> connectedRooms;
     private Map<String, String> specialCommands;
     private boolean isOutside;
+    // is the player inside yet
+    private boolean playerEntered;
+    // has the player already visited the location
     private boolean visited;
+    // has the player searched the location thoroughly (spaceship-specific)
+    private boolean hasBeenSearched;
+    // has the player passed the chambers test
+    private boolean hasBeenPassed;
+    // has the player completed all the required tasks of the location
+    private boolean hasBeenCompleted;
 
     /**
      * Constructs a new location with the given name and type.
@@ -45,7 +55,10 @@ public class Location {
             addConnection("west", null);
         this.items = new ArrayList<>();
         this.visited = false;
+        this.hasBeenSearched = false;
         this.specialCommands = new HashMap<>();
+        this.availableItems = new  ArrayList<>();
+        this.playerEntered = false;
     }
 
     /**
@@ -53,8 +66,11 @@ public class Location {
      *
      * @param item The item to add
      */
-    public void addItem(Item item) {
+    public void addItem(Item item, boolean isAvailable) {
         items.add(item);
+        if(isAvailable) {
+            availableItems.add(item);
+        }
     }
 
     /**
@@ -75,6 +91,59 @@ public class Location {
         return items;
     }
 
+    /**
+     * Checks if the specified item is available or not
+     *
+     * @return boolean
+     */
+    public boolean isItemAvailable(String itemName) {
+        for(Item item : items) {
+            if(item.getName().equals(itemName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the room has been fully searched or not
+     *
+     * @return boolean
+     */
+    public boolean hasBeenSearched() {
+        return hasBeenSearched;
+    }
+
+    public void setSearched(boolean searched) {
+        hasBeenSearched = searched;
+    }
+
+    public boolean hasBeenCompleted() {
+        return hasBeenCompleted;
+    }
+    public void setCompleted(boolean completed) {
+        hasBeenCompleted = completed;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+    public boolean hasPlayerEntered() {
+        return playerEntered;
+    }
+    public void setPlayerEntered(boolean playerEntered) {
+        this.playerEntered = playerEntered;
+    }
+
+    public boolean hasBeenPassed() {
+        return hasBeenPassed;
+    }
+    public void setHasBeenPassed(boolean hasBeenPassed) {
+        this.hasBeenPassed = hasBeenPassed;
+    }
     /**
      * Gets the name of the location.
      *

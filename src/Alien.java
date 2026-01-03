@@ -35,7 +35,7 @@
  *   String question = zyx.askQuestion();
  *   boolean passed = zyx.checkAnswer(playerAnswer);
  */
-import java.util.List;
+import java.util.*;
 public class Alien{
 private String name;
 private String role;
@@ -45,6 +45,7 @@ private int trustLevel;
 private int currentQuestion;
 private boolean hasMetPlayer;
 private boolean testCompleted;
+private String greeting;
 
  /**
      * Creates a new Alien with a name, chamber type, and list of questions.
@@ -53,9 +54,10 @@ private boolean testCompleted;
      * @param role The type of test ("logic", "empathy", or "trust")
      * @param questions List of Question objects to ask the player
      */
- public Alien(String name, String role, List<Question> questionَs) {
+ public Alien(String name, String role, List<Question> questions) {
      this.name = name;
      this.role = role;
+     this.greeting = greeting;
      this.questions = questions;
      this.trustLevel = 0;
      this.currentQuestion = 0;
@@ -70,28 +72,20 @@ private boolean testCompleted;
      */
     public String greet() {
         hasMetPlayer = true;
-
-        String greeting = "═══════════════════════════════════════════════════════\n";
-        greeting = greeting + "A figure emerges from the shadows...\n\n";
-        greeting = greeting + "\"Greetings, Earth Messenger.\n";
-        greeting = greeting + "I am " + name + ".\n";
-        greeting = greeting + "I have studied your kind for decades.\n\n";
-        greeting = greeting + "Prove to me that you are truly human.\"\n";
-        greeting = greeting + "═══════════════════════════════════════════════════════\n";
-
-        return greeting;
+        System.out.println("hello");
+        return "";
     }
     /**
      * Starts the test by showing the first question.
      *
      * @return Message indicating test has begun and the first question
      */
-    public String startTest() {
+    public String startTest(Player player) {
         if (testCompleted) {
             return name + " has already tested you.";
         }
 
-        return "\"Let us begin...\"\n\n" + askQuestion();
+        return "\"Let us begin...\"\n\n" + askQuestion(player);
     }
 
     /**
@@ -100,7 +94,7 @@ private boolean testCompleted;
      *
      * @return Formatted question string, or message if no questions remain
      */
-    public String askQuestion() {
+    public String askQuestion(Player player) {
         // Check if we have questions left
         if (currentQuestion >= questions.size()) {
             return "No more questions.";
@@ -108,6 +102,8 @@ private boolean testCompleted;
 
         // Get current question
         Question q = questions.get(currentQuestion);
+        player.setCurrentQuestion(q);
+
         String questionNumber = "Question " + (currentQuestion + 1) + " of " + questions.size();
 
         return "───────────────────────────────────────────────────────\n" +
@@ -127,7 +123,7 @@ private boolean testCompleted;
      * @param playerAnswer The player's answer (either "a", "b", "c" or a word/phrase)
      * @return Feedback message and next question (or test result if finished)
      */
-    public String checkAnswer(String playerAnswer) {
+    public String checkAnswer(Player player, String playerAnswer) {
         // Make sure we have questions
         if (currentQuestion >= questions.size()) {
             return "There are no more questions to answer.";
@@ -154,9 +150,11 @@ private boolean testCompleted;
         // Check if test is finished
         if (currentQuestion >= questions.size()) {
             testCompleted = true;
-            response = response + "\n" + getTestResult();
+            player.setCurrentQuestion(null);
+            player.getCurrentLocation().setCompleted(true);
+            response = response + "\n" + getTestResult(player);
         } else {
-            response = response + "\n" + askQuestion();
+            response = response + "\n" + askQuestion(player);
         }
 
         return response;
@@ -170,16 +168,21 @@ private boolean testCompleted;
          *
          * @return Formatted test result with verdict and trust level
          */
-        private String getTestResult() {
+        private String getTestResult(Player player) {
             String result = "═══════════════════════════════════════════════════════\n";
             result = result + name + " steps back and studies you carefully.\n\n";
 
-            if (trustLevel >= 15) {
+            if (trustLevel >= 20) {
                 result = result + "\"You have proven yourself worthy.\n";
                 result = result + "I will speak in your favor.\"\n";
-            } else if (trustLevel >= 0) {
+                player.getGame().addToChambersPassed();
+                player.getCurrentLocation().setHasBeenPassed(true);
+
+            } else if (trustLevel >= 10) {
                 result = result + "\"You are... acceptable.\n";
                 result = result + "I will not oppose you.\"\n";
+                player.getGame().addToChambersPassed();
+                player.getCurrentLocation().setHasBeenPassed(true);
             } else {
                 result = result + "\"I am disappointed.\n";
                 result = result + "You have failed this test.\"\n";
@@ -187,30 +190,42 @@ private boolean testCompleted;
 
             result = result + "\nTrust Level: " + trustLevel;
             result = result + "\n═══════════════════════════════════════════════════════\n";
-            result = result + "\nYou may return to the Nexus.";
+            boolean allCompleted = player.getGame().getLocations()
+                    .values()
+                    .stream()
+                    .allMatch(Location::hasBeenCompleted);
+
+            if(allCompleted) {
+                result += player.getGame().getOutro();
+            }
+            else{
+                result += "\nYou may exit to the Nexus.";
+            }
 
             return result;
         }
-        /**
-         * Returns appropriate message when player returns to the chamber.
-         *
-         * @return Greeting if first visit, acknowledgment if test complete, or waiting message
-         */
-        public String returnMessage() {
-            if (!hasMetPlayer) {
-                return greet();
-            }
 
-            if (testCompleted) {
-                if (trustLevel >= 0) {
-                    return name + " acknowledges you with a slight nod.";
-                } else {
-                    return name + " turns away from you.";
-                }
-            }
 
-            return name + " is waiting for your answer.";
-        }
+//        /**
+//         * Returns appropriate message when player returns to the chamber.
+//         *
+//         * @return Greeting if first visit, acknowledgment if test complete, or waiting message
+//         */
+//        public String returnMessage() {
+//            if (!hasMetPlayer) {
+//                return greet();
+//            }
+//
+//            if (testCompleted) {
+//                if (trustLevel >= 0) {
+//                    return name + " acknowledges you with a slight nod.";
+//                } else {
+//                    return name + " turns away from you.";
+//                }
+//            }
+//
+//            return name + " is waiting for your answer.";
+//        }
         // ===== GETTER METHODS =====
 
         /**
