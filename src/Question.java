@@ -5,11 +5,6 @@
  * 1. Multiple Choice - Has options (A, B, C, D) for player to choose from
  * 2. Open Answer (Word Question) - Player types their own answer
  *
- * DESIGN PHILOSOPHY:
- * - All questions use the same class (no subclasses needed)
- * - Questions differ only in their data (text, options, answers)
- * - Behavior is identical: display question, check answer
- *
  * EXAMPLES:
  *
  * Multiple Choice Question:

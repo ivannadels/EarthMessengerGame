@@ -15,11 +15,6 @@
  * human from Earth and that your intentions are pure. Only if you pass their trials will
  * they welcome you and help preserve what remains of humanity.
  *
- * GAME STATE TRACKING:
- * - chambersPassed: Counts how many chambers player has completed (0-3)
- * - gameWon: True if aliens accept the player
- * - gameLost: True if aliens reject the player
- *
  */
 import java.util.*;
 
@@ -45,7 +40,6 @@ public class EarthMessenger {
      * Main class for the Earth Messenger game.
      * Creates a new game instance and runs the game loop.
      */
-
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -75,10 +69,24 @@ public class EarthMessenger {
         scanner.close();
     }
 
+    /**
+     * Starts the game by displaying the introductory sequence.
+     */
     public void start() {
         displayIntro();
     }
 
+    /**
+     * Loads and initializes the entire game world.
+     *
+     * This method creates all alien occupants, constructs every location,
+     * assigns room connections, places items, and sets the player's starting
+     * position. It prepares the full environment required for gameplay.
+     *
+     * @param player the player instance whose starting state and location
+     *               will be initialized
+     * @return {@code true} once the world has been successfully created
+     */
     public boolean load(Player player) {
 
         // Create the Alien room occupants before setting locations
@@ -159,17 +167,13 @@ public class EarthMessenger {
          *   - North: The Blue Spire
          *   - East: The Living Garden
          *   - West: The Glass Fortress
-         *   - Up: The Apex
          *   - South: Spaceship
          * No alien occupant
          */
         planetSurface.setLongDescription(
-                "You stand at the center. Red dust covers everything.\n" +
-                        "Paths lead to strange alien structures:\n" +
-                        "- NORTH: The Blue Spire\n" +
-                        "- EAST: The Living Garden\n" +
-                        "- WEST: The Glass Fortress\n" +
-                        "- SOUTH: Your Spaceship"
+                "You stand on a quiet rise overlooking a green valley.\n" +
+                "The sky above is pale blue, there are about 10 moons overlooking...\n\n" +
+                "From here, paths lead toward strange structures.\n"
         );
         planetSurface.setShortDescription(planetSurface.getLongDescription());
         planetSurface.addConnection("south", spaceship);
@@ -256,14 +260,17 @@ public class EarthMessenger {
         return true;
     }
 
-    /*
-     *  Create the aliens that occupy each chamber.
+    /**
+     * Creates and initializes all alien entities that occupy the game's chambers.
+     * Assigns greetings and questions to each alien.
      *
-     *  East Chamber (Living Garden) - Marshmallow
-     *  North Chamber (Blue Spire) - Corn
-     *  West Chamber (Glass Fortress) - Water
-     * */
-
+     * Chamber assignments:
+     *    - East Chamber (Living Garden) – Marshmallow
+     *    - North Chamber (Blue Spire) – Corn
+     *    - West Chamber (Glass Fortress) – Water
+     *
+     * @return a list containing all created Alien instances
+     */
     public List<Alien> createAliens() {
 
         // EMPATHY ALIEN - MARSHMALLOW (East Chamber)

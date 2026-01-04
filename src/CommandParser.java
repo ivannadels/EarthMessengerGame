@@ -137,6 +137,7 @@ public class CommandParser {
         if (currentLocation.hasSpecialCommand(input)) {
             return handleSpecialCommand(input, currentLocation);
         }
+        // if the player is in questioning, use the answer checker instead
         else if(player.getCurrentQuestion()!=null){
             return currentLocation.getOccupant().checkAnswer(player, input);
         }
@@ -515,7 +516,7 @@ public class CommandParser {
     // -------------------- Special Commands --------------------
 
     /**
-     * Handles location-specific special commands.
+     * Handles spaceship-specific special commands.
      *
      * @param command  The full command string
      * @return Result message after executing the special command

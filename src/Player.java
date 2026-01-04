@@ -104,13 +104,31 @@ public class Player {
     public void addItem(Item item) {
         inventory.add(item);
         System.out.println("Added: " + item.getName());
-}
+    }
+
+    /**
+     * Retrieves the question the player is currently answering.
+     *
+     * @return the active Question object, or null if none is set
+     */
     public Question getCurrentQuestion() {
         return currentQuestion;
     }
+
+    /**
+     * Sets the current question the player must answer.
+     *
+     * @param currentQuestion the Question object to assign as active
+     */
     public void setCurrentQuestion(Question currentQuestion) {
         this.currentQuestion = currentQuestion;
     }
+
+    /**
+     * Returns the main game instance associated with this player.
+     *
+     * @return the EarthMessenger game object
+     */
     public EarthMessenger getGame() {
         return game;
     }

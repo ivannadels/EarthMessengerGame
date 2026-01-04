@@ -27,6 +27,7 @@ public class Location {
     private Map<String, Location> connectedRooms;
     private Map<String, String> specialCommands;
     private boolean isOutside;
+    private Alien roomOccupant;
     // is the player inside yet
     private boolean playerEntered;
     // has the player already visited the location
@@ -72,6 +73,12 @@ public class Location {
             availableItems.add(item);
         }
     }
+
+    /**
+     * Adds an item to the location as available to use.
+     *
+     * @param item The item to add
+     */
     public void addAvailableItem(Item item) {
         availableItems.add(item);
     }
@@ -116,37 +123,89 @@ public class Location {
     public boolean hasBeenSearched() {
         return hasBeenSearched;
     }
-
+    /**
+     * Marks whether this location has been searched by the player.
+     *
+     * @param searched true if the location has been searched, false otherwise
+     */
     public void setSearched(boolean searched) {
         hasBeenSearched = searched;
     }
 
+    /**
+     * Checks whether this location's challenge or objective has been completed.
+     *
+     * @return true if the location is completed, false otherwise
+     */
     public boolean hasBeenCompleted() {
         return hasBeenCompleted;
     }
+
+    /**
+     * Sets whether this location's challenge or objective has been completed.
+     *
+     * @param completed true if the location is completed, false otherwise
+     */
     public void setCompleted(boolean completed) {
         hasBeenCompleted = completed;
     }
 
+    /**
+     * Checks whether the player has visited this location.
+     *
+     * @return true if the location has been visited, false otherwise
+     */
     public boolean isVisited() {
         return visited;
     }
+
+    /**
+     * Marks whether the player has visited this location.
+     *
+     * @param visited true if the location has been visited, false otherwise
+     */
     public void setVisited(boolean visited) {
         this.visited = visited;
     }
+
+    /**
+     * Checks whether the player is currently inside.
+     *
+     * @return true if the player is in the location, false otherwise
+     */
     public boolean hasPlayerEntered() {
         return playerEntered;
     }
+
+    /**
+     * Marks whether the player is currently inside.
+     *
+     * @param playerEntered true if the player in inside, false otherwise
+     */
     public void setPlayerEntered(boolean playerEntered) {
         this.playerEntered = playerEntered;
     }
 
+    /**
+     * Checks whether the player has successfully passed the assessment
+     * in this location.
+     *
+     * @return true if the location has been passed, false otherwise
+     */
     public boolean hasBeenPassed() {
         return hasBeenPassed;
     }
+
+    /**
+     * Marks whether the player has successfully passed the assessment
+     * in this location.
+     *
+     * @param hasBeenPassed true if the location has been passed, false otherwise
+     */
     public void setHasBeenPassed(boolean hasBeenPassed) {
         this.hasBeenPassed = hasBeenPassed;
     }
+
     /**
      * Gets the name of the location.
      *
@@ -251,27 +310,56 @@ public class Location {
     public Location getConnectedRoom(String direction) {
         return connectedRooms.get(direction.toLowerCase());
     }
-
+    /**
+     * Returns all rooms directly connected to this location.
+     *
+     * @return a map of direction strings to their corresponding connected Location objects
+     */
     public Map<String, Location> getConnectedRooms() {
         return connectedRooms;
     }
 
-    public Item getItem(String itemName){
-        return items.stream().filter(item -> item.getName().equals(itemName)).findFirst().orElse(null);
+    /**
+     * Retrieves an item from this location by name.
+     *
+     * This method searches the list of items in the location and returns
+     * the first match based on the item's name. If no item matches, it
+     * returns {@code null}.
+     *
+     * @param itemName the name of the item to look for
+     * @return the matching Item object, or {@code null} if not found
+     */
+    public Item getItem(String itemName) {
+        return items.stream()
+                .filter(item -> item.getName().equals(itemName))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
-     * define a location for aliens
+     * Assigns an alien occupant to this location.
+     *
+     * @param alien the Alien to place in this room
      */
-    private Alien roomOccupant;
-
-    public void addOccupant(Alien alien){
+    public void addOccupant(Alien alien) {
         this.roomOccupant = alien;
     }
+
+    /**
+     * Returns the alien currently occupying this location.
+     *
+     * @return the room's Alien occupant, or {@code null} if none is present
+     */
     public Alien getOccupant() {
         return roomOccupant;
     }
-    public boolean hasOccupant(){
+
+    /**
+     * Checks whether this location has an alien occupant.
+     *
+     * @return {@code true} if an alien is present, otherwise {@code false}
+     */
+    public boolean hasOccupant() {
         return roomOccupant != null;
     }
 }
