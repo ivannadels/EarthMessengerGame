@@ -13,7 +13,7 @@ public class WaterBottle extends Item {
      */
     public WaterBottle() {
         String description = "A bottle of clean drinking water";
-        super("watterBottle", description, "\uD83D\uDCA7");
+        super("waterBottle", description, "\uD83D\uDCA7");
     }
 
     /**

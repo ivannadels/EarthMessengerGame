@@ -72,6 +72,9 @@ public class Location {
             availableItems.add(item);
         }
     }
+    public void addAvailableItem(Item item) {
+        availableItems.add(item);
+    }
 
     /**
      * Removes an item from the location.
@@ -97,7 +100,7 @@ public class Location {
      * @return boolean
      */
     public boolean isItemAvailable(String itemName) {
-        for(Item item : items) {
+        for(Item item : availableItems) {
             if(item.getName().equals(itemName)) {
                 return true;
             }
@@ -215,7 +218,7 @@ public class Location {
      * @return A list of special command descriptions
      */
     public List<String> getSpecialCommandDescriptions() {
-        return new ArrayList<>(specialCommands.values()); // Return list of descriptions
+        return new ArrayList<>(specialCommands.keySet());
     }
 
     /**
@@ -247,6 +250,14 @@ public class Location {
      */
     public Location getConnectedRoom(String direction) {
         return connectedRooms.get(direction.toLowerCase());
+    }
+
+    public Map<String, Location> getConnectedRooms() {
+        return connectedRooms;
+    }
+
+    public Item getItem(String itemName){
+        return items.stream().filter(item -> item.getName().equals(itemName)).findFirst().orElse(null);
     }
 
     /**

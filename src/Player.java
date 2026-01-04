@@ -45,6 +45,7 @@ public class Player {
      * @param itemToUse The noun representing the item to use
      */
     public void useItem(CommandParser.Noun itemToUse) {
+
         Item itemInInventory = inventory.stream()
                 .filter(item -> item.getName().equalsIgnoreCase(itemToUse.toString()))
                 .findFirst().orElse(null);
@@ -52,8 +53,47 @@ public class Player {
             itemInInventory.use(this);
         }
         else{
-            System.out.println("This item is not in your inventory.");
+            // Use the displayInventory command
+            System.out.println("This item is not in your inventory...\n+" +
+                    this.displayInventory() +
+                    "You can only use this command for things in your inventory.");
         }
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    /**
+     * Displays the player's inventory in a formatted string.
+     *
+     * @return A formatted inventory list or a message if empty
+     */
+    public String displayInventory() {
+        List<Item> inventory = this.getInventory();
+
+        if (inventory.isEmpty()) {
+            return "═══════════════════════════════════════════════════════\n" +
+                    "                    INVENTORY                          \n" +
+                    "═══════════════════════════════════════════════════════\n" +
+                    "   Your inventory is empty.                            \n" +
+                    "═══════════════════════════════════════════════════════";
+        }
+
+        StringBuilder response = new StringBuilder();
+        response.append("═══════════════════════════════════════════════════════\n");
+        response.append("                    INVENTORY                          \n");
+        response.append("═══════════════════════════════════════════════════════\n");
+
+        for (Item item : inventory) {
+            response.append("  ").append(item.getGraphic()).append(" ").append(item.getName()).append("\n");
+            response.append("     ").append(item.getDescription()).append("\n");
+            response.append("\n");
+        }
+
+        response.append("═══════════════════════════════════════════════════════\n");
+
+        return response.toString();
     }
 
     /**
@@ -80,7 +120,7 @@ public class Player {
      *
      * @param itemToRemove The noun representing the item to remove
      */
-    public void removeItem(CommandParser.Noun itemToRemove) {
+    public void removeItem(Item itemToRemove) {
         inventory.remove(itemToRemove);
     }
 
@@ -178,4 +218,23 @@ public class Player {
     public Location getCurrentLocation() {
         return this.currentLocation;
     }
+    /**
+     * Checks whether every location in the game has been completed.
+     *
+     * This method iterates through all locations returned by the game's
+     * location registry. If any location has not been completed, the
+     * method returns {@code false}. Only if all locations report completion
+     * does the method return {@code true}.
+     *
+     * @return {@code true} if all locations are completed, otherwise {@code false}
+     */
+    public boolean allLocationsCompleted() {
+        for (Location location : game.getLocations().values()) {
+            if (!location.hasBeenCompleted()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

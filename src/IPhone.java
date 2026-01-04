@@ -53,7 +53,7 @@ public class IPhone extends Item {
         System.out.println("They know what we were.");
         pause(2500);
 
-        System.out.println("\n\"Your mission is simple: convince them you're human.");
+        System.out.println("\n\"Your mission is simple: pass their tests and convince them you're human.");
         System.out.println("Convince them your intentions are pure. Convince them");
         System.out.println("to let humanity, what's left of it, begin again.\"");
         pause(2000);

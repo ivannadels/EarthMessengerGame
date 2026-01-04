@@ -12,13 +12,13 @@
  * - Greets the player when they enter the chamber
  * - Asks a series of questions (both multiple choice and open-ended)
  * - Evaluates player's answers and adjusts trust level
- * - Determines if the player passes the test (trust level >= 15)
+ * - Determines if the player passes the test (trust level >= 25)
  *
  * SCORING SYSTEM:
  * - Starts at trust level 0
  * - Correct answer: +10 points
  * - Wrong answer: -5 points
- * - To pass: Need at least 15 points (2+ correct answers out of 4)
+ * - To pass: Need at least 25 points (3+ correct answers out of 4)
  * and poses questions to evaluate the player's humanity and intentions.
  * The alien evaluates the player's response and contributes to the final judgment.
  *
@@ -54,7 +54,7 @@ private String greeting;
      * @param role The type of test ("logic", "empathy", or "trust")
      * @param questions List of Question objects to ask the player
      */
- public Alien(String name, String role, List<Question> questions) {
+ public Alien(String name, String role, List<Question> questions, String greeting) {
      this.name = name;
      this.role = role;
      this.greeting = greeting;
@@ -72,8 +72,7 @@ private String greeting;
      */
     public String greet() {
         hasMetPlayer = true;
-        System.out.println("hello");
-        return "";
+        return this.greeting;
     }
     /**
      * Starts the test by showing the first question.
@@ -172,60 +171,26 @@ private String greeting;
             String result = "═══════════════════════════════════════════════════════\n";
             result = result + name + " steps back and studies you carefully.\n\n";
 
-            if (trustLevel >= 20) {
-                result = result + "\"You have proven yourself worthy.\n";
+            if (trustLevel >= 25) {
+                result = result + "\"You have proven yourself worthy" + player.getName() + "\n";
                 result = result + "I will speak in your favor.\"\n";
-                player.getGame().addToChambersPassed();
-                player.getCurrentLocation().setHasBeenPassed(true);
-
-            } else if (trustLevel >= 10) {
-                result = result + "\"You are... acceptable.\n";
-                result = result + "I will not oppose you.\"\n";
                 player.getGame().addToChambersPassed();
                 player.getCurrentLocation().setHasBeenPassed(true);
             } else {
                 result = result + "\"I am disappointed.\n";
-                result = result + "You have failed this test.\"\n";
+                result = result + "You have failed this test, " + player.getName() + "\"\n";
             }
 
             result = result + "\nTrust Level: " + trustLevel;
             result = result + "\n═══════════════════════════════════════════════════════\n";
-            boolean allCompleted = player.getGame().getLocations()
-                    .values()
-                    .stream()
-                    .allMatch(Location::hasBeenCompleted);
 
-            if(allCompleted) {
-                result += player.getGame().getOutro();
-            }
-            else{
-                result += "\nYou may exit to the Nexus.";
-            }
+
+            result += "\nYou may exit to the Nexus.";
+
 
             return result;
         }
 
-
-//        /**
-//         * Returns appropriate message when player returns to the chamber.
-//         *
-//         * @return Greeting if first visit, acknowledgment if test complete, or waiting message
-//         */
-//        public String returnMessage() {
-//            if (!hasMetPlayer) {
-//                return greet();
-//            }
-//
-//            if (testCompleted) {
-//                if (trustLevel >= 0) {
-//                    return name + " acknowledges you with a slight nod.";
-//                } else {
-//                    return name + " turns away from you.";
-//                }
-//            }
-//
-//            return name + " is waiting for your answer.";
-//        }
         // ===== GETTER METHODS =====
 
         /**
